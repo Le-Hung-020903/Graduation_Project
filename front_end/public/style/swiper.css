@@ -1,0 +1,60 @@
+/* Swiper Products */
+
+.custom-swiper-item {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e3e4 !important;
+  cursor: pointer;
+}
+.custom-swiper-item:hover {
+  border: 1px solid #eec73e !important;
+}
+.swiper-pagination-bullet {
+  margin-top: 100px;
+}
+.swiper-pagination-bullet-active {
+  background-color: #eec73e !important;
+}
+.swiper-products .swiper-pagination {
+  top: 282px;
+}
+
+/* Swiper Comments */
+.custom-swiper-button-prev,
+.custom-swiper-button-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  background-color: #f4f4f4;
+  color: black;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Vị trí cho nút Prev */
+.custom-swiper-button-prev {
+  left: -70px;
+}
+
+/* Vị trí cho nút Next */
+.custom-swiper-button-next {
+  right: -70px;
+}
+
+.custom-swiper-button-prev:hover,
+.custom-swiper-button-next:hover {
+  background-color: #eec73e;
+  color: #128447;
+}
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}
