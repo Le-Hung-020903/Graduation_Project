@@ -14,6 +14,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { LogoutData } from './interface/logout.interface';
 import { GoogleAuthGuard } from 'src/guards/google-auth/google-auth.guard';
 import { Public } from 'src/Decorator/auth.decorator';
+import JWT from 'src/utils/jwt';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +26,7 @@ export class AuthController {
     @Body() createAuthDto: CreateAuthDto,
     @Res({ passthrough: true }) res,
   ) {
-    const { accessToken, refreshToken } =
+    const { accessToken, refreshToken, userActive } =
       await this.authService.login(createAuthDto);
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
@@ -43,6 +44,7 @@ export class AuthController {
     return {
       success: true,
       message: 'Đăng nhập thành công',
+      data: userActive,
     };
   }
 
@@ -98,15 +100,31 @@ export class AuthController {
     };
   }
 
+  @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
   googleLogin() {}
 
+  @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  googleCallback(@Req() req) {
+  async googleCallback(@Req() req, @Res({ passthrough: true }) res) {
     const user = req.user;
-
+    const { accessToken, refreshToken } =
+      await this.authService.signInGoogleUser(user);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngay
+    });
+    res.redirect(`${process.env.ENVIRONMENT_LOCAL}`);
     // sau khi có user hãy viết 1 hàm riêng cho việc login bằng google
     // và xử lý gì thì hãy return ở đây (gửi JWT về cookies trình duyệt)
     // và nhớ cho status bằng true khi login với google

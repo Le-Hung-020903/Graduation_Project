@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
   InternalServerErrorException,
+  ConflictException,
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { Repository } from 'typeorm';
@@ -16,6 +17,7 @@ import { BlackListService } from 'src/black-list/black-list.service';
 import { UserToken } from './entities/user_token.entity';
 import { LogoutData } from './interface/logout.interface';
 import { GoogleUserDto } from 'src/user/dto/google-user.dto';
+import { GoogleUser } from './interface/userGoogle.interface';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +30,7 @@ export class AuthService {
 
   async login(
     createAuthDto: CreateAuthDto,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; userActive: User }> {
     const { email, password } = createAuthDto;
     if (!email || !password) {
       throw new HttpException(
@@ -76,6 +78,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+      userActive,
     };
   }
 
@@ -148,19 +151,37 @@ export class AuthService {
   }
 
   async validateGoogleUser(googleUser: GoogleUserDto) {
-    const user = await this.userRepository.findOne({
+    let user = await this.userRepository.findOne({
       where: {
         email: googleUser.email,
       },
     });
     if (!user) {
-      const newGoogleUser = this.userRepository.create({
+      user = this.userRepository.create({
         name: googleUser.name,
         email: googleUser.email,
         avatar: googleUser.avatar,
       });
-      await this.userRepository.save(newGoogleUser);
+      await this.userRepository.save(user);
     }
+
     return user;
+  }
+  async signInGoogleUser(user: GoogleUser) {
+    const accessToken: string = JWT.createAccessToken({
+      userId: user.id,
+    });
+    const refreshToken: string = JWT.createRefreshToken();
+
+    // Lưu refreshToken vào user token
+    const saveRefreshToken = await this.userTokenRepository.create({
+      user_id: user.id,
+      refresh_token: refreshToken,
+    });
+    await this.userTokenRepository.save(saveRefreshToken);
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

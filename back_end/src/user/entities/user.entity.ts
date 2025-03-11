@@ -1,6 +1,10 @@
 import { UserToken } from 'src/auth/entities/user_token.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
 import { Order } from 'src/order/entities/order.entity';
+import { CommentPost } from 'src/post/comment_post/entities/comment_post.entity';
+import { Post } from 'src/post/entities/post.entity';
+import { Comment } from 'src/product/comment/entities/comment.entity';
+import { FavoriteProduct } from 'src/product/favorite_product/entities/favorite_product.entity';
 import { Role } from 'src/rbac/role/entities/role.entity';
 import {
   Column,
@@ -73,4 +77,25 @@ export class User {
     onDelete: 'CASCADE',
   })
   orders: Order[];
+
+  @OneToMany(() => FavoriteProduct, (favorite) => favorite.user, {
+    cascade: true,
+  })
+  favorites: FavoriteProduct[];
+
+  @OneToMany(() => Comment, (review) => review.user, {
+    cascade: true,
+  })
+  reviews: Comment[];
+
+  @OneToMany(() => Post, (post) => post.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  posts: Post[];
+
+  @OneToMany(() => CommentPost, (commentPost) => commentPost.user, {
+    cascade: true,
+  })
+  comments: CommentPost[];
 }

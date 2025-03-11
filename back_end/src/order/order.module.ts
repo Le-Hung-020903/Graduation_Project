@@ -7,6 +7,7 @@ import { Order } from './entities/order.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { UserModule } from 'src/user/user.module';
 import { BlackListModule } from 'src/black-list/black-list.module';
+import { DiscountModule } from 'src/discount/discount.module';
 
 @Module({
   controllers: [OrderController],
@@ -16,6 +17,7 @@ import { BlackListModule } from 'src/black-list/black-list.module';
     OrderDetailModule,
     BlackListModule,
     UserModule,
+    DiscountModule,
   ],
 })
 export class OrderModule {}

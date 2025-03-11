@@ -14,6 +14,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { Public } from 'src/Decorator/auth.decorator';
 const LIMIT_COMMON_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOW_COMMON_FILE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 @Controller('product')
@@ -44,9 +45,10 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  @Public()
+  @Get(':param')
+  findOne(@Param('param') param: string) {
+    return this.productService.findOne(param);
   }
 
   @Patch(':id')

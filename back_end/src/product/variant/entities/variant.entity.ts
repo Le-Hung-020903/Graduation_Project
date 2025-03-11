@@ -1,3 +1,4 @@
+import { Inventory } from 'src/inventory/entities/inventory.entity';
 import { OrderDetail } from 'src/order/order_detail/entities/order_detail.entity';
 import { Product } from 'src/product/entities/product.entity';
 import { Unit } from 'src/product/unit/entities/unit.entity';
@@ -32,7 +33,11 @@ export class Variant {
   @Column({ nullable: true })
   litre: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    select: false,
+  })
   created_at: Date;
 
   @Column({
@@ -56,4 +61,7 @@ export class Variant {
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.variant)
   orderDetails: OrderDetail[];
+
+  @OneToMany(() => Inventory, (inventory) => inventory.variant)
+  inventories: Inventory[];
 }

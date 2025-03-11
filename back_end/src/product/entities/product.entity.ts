@@ -13,6 +13,8 @@ import { Category } from 'src/category/entities/category.entity';
 import { Variant } from '../variant/entities/variant.entity';
 import { CartProduct } from 'src/cart/cart_product/entities/cart_product.entity';
 import { OrderDetail } from 'src/order/order_detail/entities/order_detail.entity';
+import { FavoriteProduct } from '../favorite_product/entities/favorite_product.entity';
+import { Comment } from '../comment/entities/comment.entity';
 @Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn()
@@ -70,4 +72,14 @@ export class Product {
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
   orderDetails: OrderDetail[];
+
+  @OneToMany(() => FavoriteProduct, (favorite) => favorite.product, {
+    cascade: true,
+  })
+  favorites: FavoriteProduct[];
+
+  @OneToMany(() => Comment, (review) => review.product, {
+    cascade: true,
+  })
+  reviews: Comment[];
 }

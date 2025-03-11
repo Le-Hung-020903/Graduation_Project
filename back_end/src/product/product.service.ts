@@ -84,8 +84,43 @@ export class ProductService {
     return `This action returns all product`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(
+    param: string,
+  ): Promise<{ success: boolean; message: string; data: Product }> {
+    let product: Product | null;
+    if (!isNaN(+param)) {
+      product = await this.productRepository.findOne({
+        where: { id: +param },
+        relations: [
+          'images',
+          'category',
+          'manufacturer',
+          'ingredients',
+          'variants',
+          'variants.unit',
+        ],
+      });
+    } else {
+      product = await this.productRepository.findOne({
+        where: { slug: param },
+        relations: [
+          'images',
+          'category',
+          'manufacturer',
+          'ingredients',
+          'variants',
+          'variants.unit',
+        ],
+      });
+    }
+    if (!product) {
+      throw new NotFoundException('Sản phẩm không tồn tại');
+    }
+    return {
+      success: true,
+      message: 'Lấy thông tin sản phẩm thành công',
+      data: product,
+    };
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

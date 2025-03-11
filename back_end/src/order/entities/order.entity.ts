@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderDetail } from '../order_detail/entities/order_detail.entity';
+import { Discount } from 'src/discount/entities/discount.entity';
 
 @Entity({ name: 'orders' })
 export class Order {
@@ -54,4 +55,11 @@ export class Order {
     cascade: true,
   })
   orderDetails: OrderDetail[];
+
+  // Mỗi Order chỉ có thể áp dụng 1 Discount
+  @ManyToOne(() => Discount, (discount) => discount.orders, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  discount: Discount;
 }

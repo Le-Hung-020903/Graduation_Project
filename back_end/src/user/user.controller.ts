@@ -13,11 +13,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ILike } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
+import { Public } from 'src/Decorator/auth.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Post('create')
   createUserDto(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);

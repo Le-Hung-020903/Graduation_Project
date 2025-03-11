@@ -19,7 +19,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
   ) {}
-  // create user
+
   async create(
     createUserDto: CreateUserDto,
   ): Promise<{ success: boolean; message: string }> {

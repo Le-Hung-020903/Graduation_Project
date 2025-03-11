@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from 'src/order/entities/order.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'discounts' })
 export class Discount {
@@ -17,6 +18,9 @@ export class Discount {
   @Column()
   percent: number;
 
+  @Column({ nullable: true })
+  condition: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
@@ -26,4 +30,8 @@ export class Discount {
     select: false,
   })
   updated_at: Date;
+
+  // 1 Discount có thể được áp dụng cho nhiều Order
+  @OneToMany(() => Order, (order) => order.discount)
+  orders: Order[];
 }

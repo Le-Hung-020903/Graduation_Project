@@ -1,3 +1,4 @@
+import { Inventory } from 'src/inventory/entities/inventory.entity';
 import { Product } from 'src/product/entities/product.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -18,7 +19,11 @@ export class Manufacturer {
   @Column({ unique: true })
   email: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    select: false,
+  })
   created_at: Date;
 
   @Column({
@@ -30,4 +35,7 @@ export class Manufacturer {
 
   @OneToMany(() => Product, (product) => product.manufacturer)
   products: Product[];
+
+  @OneToMany(() => Inventory, (inventory) => inventory.manufacturer)
+  inventories: Inventory[];
 }

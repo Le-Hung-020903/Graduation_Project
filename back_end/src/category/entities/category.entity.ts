@@ -1,5 +1,12 @@
 import { Product } from 'src/product/entities/product.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 @Entity({ name: 'categories' })
 export class Category {
   @PrimaryGeneratedColumn()
@@ -11,13 +18,25 @@ export class Category {
   @Column({ nullable: true })
   desc: string;
 
-  @Column({ nullable: true })
-  parent_id: number;
-
   @Column({ unique: true })
   slug: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @ManyToOne(() => Category, (category) => category.children, {
+    nullable: true,
+    onDelete: 'CASCADE',
+    // Khi xóa danh mục cha, danh mục con cũng bị xóa
+  })
+  @JoinColumn({ name: 'parent_id' })
+  parent: Category | null;
+
+  @OneToMany(() => Category, (category) => category.parent)
+  children: Category[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    select: false,
+  })
   created_at: Date;
 
   @Column({

@@ -10,6 +10,9 @@ import { ProductImageModule } from './product_image/product_image.module';
 import { CategoryModule } from 'src/category/category.module';
 import { ManufacturerModule } from 'src/manufacturer/manufacturer.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { FavoriteProductModule } from './favorite_product/favorite_product.module';
+import { CommentModule } from './comment/comment.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   controllers: [ProductController],
@@ -25,6 +28,9 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
     CloudinaryModule,
     VariantModule,
     IngredientModule,
+    FavoriteProductModule,
+    CommentModule,
+    TransactionModule,
   ],
 })
 export class ProductModule {}

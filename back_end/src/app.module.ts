@@ -24,7 +24,6 @@ import { ProductImage } from './product/product_image/entities/product_image.ent
 import { Variant } from './product/variant/entities/variant.entity';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
-import { ReviewModule } from './review/review.module';
 import { RbacModule } from './rbac/rbac.module';
 import { Permission } from './rbac/permission/entities/permission.entity';
 import { Role } from './rbac/role/entities/role.entity';
@@ -35,6 +34,14 @@ import { OrderDetail } from './order/order_detail/entities/order_detail.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role/role.guard';
+import { FavoriteProduct } from './product/favorite_product/entities/favorite_product.entity';
+import { Comment } from './product/comment/entities/comment.entity';
+import { InventoryModule } from './inventory/inventory.module';
+import { Inventory } from './inventory/entities/inventory.entity';
+import { Transaction } from './product/transaction/entities/transaction.entity';
+import { PostModule } from './post/post.module';
+import { Post } from './post/entities/post.entity';
+import { CommentPost } from './post/comment_post/entities/comment_post.entity';
 
 @Module({
   imports: [
@@ -55,7 +62,6 @@ import { RoleGuard } from './guards/role/role.guard';
           BlackList,
           UserToken,
           Category,
-          Discount,
           Manufacturer,
           Unit,
           Product,
@@ -68,6 +74,13 @@ import { RoleGuard } from './guards/role/role.guard';
           CartProduct,
           Order,
           OrderDetail,
+          FavoriteProduct,
+          Comment,
+          Inventory,
+          Discount,
+          Transaction,
+          Post,
+          CommentPost,
         ],
         synchronize: true,
         // logging: true,
@@ -84,8 +97,9 @@ import { RoleGuard } from './guards/role/role.guard';
     ProductModule,
     OrderModule,
     CartModule,
-    ReviewModule,
     RbacModule,
+    InventoryModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [

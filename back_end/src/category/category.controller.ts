@@ -18,13 +18,14 @@ import { Public } from 'src/Decorator/auth.decorator';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  // @Public() // Cách bỏ qua AuthGuard
-  @Permissions('category.create')
+  @Public() // Cách bỏ qua AuthGuard
+  // @Permissions('category.create')
   @Post('create')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.categoryService.findAll();

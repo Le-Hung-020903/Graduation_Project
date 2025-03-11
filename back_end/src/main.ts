@@ -23,7 +23,13 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   ); // Tự động validate khi có request
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:8080', // ✅ Chỉ cho phép request từ frontend chạy tại localhost:8080
+    credentials: true, // ✅ Cho phép gửi cookies, authorization headers (JWT, session...)
+    allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Chỉ cho phép 2 loại header này
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ Chỉ cho phép các method này
+  });
+
   app.use(cookieParser());
   const config = new DocumentBuilder()
     .setTitle('Cats example')
