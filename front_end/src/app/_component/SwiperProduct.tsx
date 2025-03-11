@@ -46,10 +46,10 @@ const Swiper = ({ data }: ISwiperProps) => {
         }
       }}
     >
-      {data.map((item: IProduct, index: number) => {
+      {data.map((item: IProduct) => {
         return (
-          <>
-            <SwiperSlide className="custom-swiper-item" key={item.id || index}>
+          <Box key={item.id}>
+            <SwiperSlide className="custom-swiper-item">
               <Card
                 sx={{
                   display: "flex",
@@ -162,7 +162,7 @@ const Swiper = ({ data }: ISwiperProps) => {
               </Card>
             </SwiperSlide>
             <Box className="swiper-pagination"></Box>
-          </>
+          </Box>
         )
       })}
     </SwiperReact>

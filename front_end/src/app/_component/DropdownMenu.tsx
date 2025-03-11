@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { JSX, useState } from "react"
 import Box from "@mui/material/Box"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import DashboardIcon from "@mui/icons-material/Dashboard"
@@ -10,8 +10,16 @@ import SetMealIcon from "@mui/icons-material/SetMeal"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import Image from "next/image"
-
-const DropdownMenu = () => {
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism"
+import LocalDiningIcon from "@mui/icons-material/LocalDining"
+import EmojiFoodBeverageIcon from "@mui/icons-material/EmojiFoodBeverage"
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech"
+import { ICategory } from "../_interfaces/category"
+import { Stack } from "@mui/material"
+interface ICategoriesProps {
+  data: ICategory[]
+}
+const DropdownMenu = ({ data }: ICategoriesProps) => {
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   // Xử lý khi hover vào menu container
@@ -24,9 +32,32 @@ const DropdownMenu = () => {
     setIsHovered(false)
   }
 
+  const categoryIcons: Record<string, JSX.Element> = {
+    "gia-vi-sach": (
+      <Image
+        src="/images/Icon/salt.svg"
+        width={24}
+        height={24}
+        alt="Gia vị sạch"
+      />
+    ),
+    "rau-cu-qua": (
+      <Image
+        src="/images/Icon/vegetable.png"
+        width={24}
+        height={24}
+        alt="Rau củ quả"
+      />
+    ),
+    "thit-ca-hai-san": <SetMealIcon />,
+    "dac-san-dia-phuong": <MilitaryTechIcon />,
+    "thuc-uong-dinh-duong": <EmojiFoodBeverageIcon />,
+    "san-pham-ho-tro-suc-khoe": <VolunteerActivismIcon />,
+    "thuc-pham-che-bien-san-sach": <LocalDiningIcon />
+  }
   return (
     <Box
-      sx={{ position: "relative", display: "inline-block" }} // Đảm bảo container hoạt động đúng
+      sx={{ position: "relative" }} // Đảm bảo container hoạt động đúng
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -67,12 +98,10 @@ const DropdownMenu = () => {
       {/* Menu con */}
       <Box
         sx={{
-          mt: "5px",
-          bgcolor: "#EDEDED",
-          borderRadius: "8px",
+          pt: 2,
           position: "absolute",
-          top: "52px", // Đặt menu con ngay dưới menu cha
-          left: "0",
+          left: 0,
+          right: 0,
           opacity: isHovered ? 1 : 0, // Điều khiển độ mờ
           transform: isHovered ? "scale(1)" : "scale(0.95)", // Hiệu ứng thu phóng
           transition: "opacity 0.3s ease, transform 0.3s ease", // Hiệu ứng mượt mà
@@ -83,6 +112,8 @@ const DropdownMenu = () => {
       >
         <List
           sx={{
+            bgcolor: "#EDEDED",
+            borderRadius: "8px",
             py: 0,
             "& .MuiListItem-root": {
               px: 1.5,
@@ -111,71 +142,48 @@ const DropdownMenu = () => {
             }
           }}
         >
-          <ListItem>
-            <Image
-              src="/images/Icon/salt.svg"
-              width={24}
-              height={24}
-              alt="Tra cứu đơn hàng"
-              style={{ marginRight: "10px" }}
-            />
-            Gia vị sạch
-            <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
-              <ChevronRightIcon />
-            </ListItemIcon>
-          </ListItem>
-          <ListItem>
-            <Image
-              src="/images/Icon/vegetable.png"
-              width={24}
-              height={24}
-              alt="Tra cứu đơn hàng"
-              style={{ marginRight: "12px" }}
-            />
-            Rau - Củ - Quả
-            <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
-              <ChevronRightIcon />
-            </ListItemIcon>
-          </ListItem>
-          <ListItem>Gói sản phẩm combo</ListItem>
-          <ListItem>
-            <ListItemIcon sx={{ minWidth: "unset", mr: "10px" }}>
-              <SetMealIcon />
-            </ListItemIcon>
-            Thịt - Cá - Hải sản
-            <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
-              <ChevronRightIcon />
-            </ListItemIcon>
-          </ListItem>
-          <ListItem>Đặc sản địa phương</ListItem>
-          <ListItem>
-            <Image
-              src="/images/Icon/drink.svg"
-              width={24}
-              height={24}
-              alt="Tra cứu đơn hàng"
-              style={{ marginRight: "10px" }}
-            />
-            Thức uống dinh dưỡng
-            <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
-              <ChevronRightIcon />
-            </ListItemIcon>
-          </ListItem>
-          <ListItem>Ngũ cốc và hạt dinh dưỡng</ListItem>
-          <ListItem>Sản phẩm hỗ trợ sức khoẻ</ListItem>
-          <ListItem>
-            <Image
-              src="/images/Icon/fork-knife.svg"
-              width={24}
-              height={24}
-              alt="Tra cứu đơn hàng"
-              style={{ marginRight: "10px" }}
-            />
-            Chế biến sẵn (sạch)
-            <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
-              <ChevronRightIcon />
-            </ListItemIcon>
-          </ListItem>
+          {data?.map((item: ICategory) => {
+            return (
+              <ListItem
+                key={item.id}
+                sx={{
+                  "&:hover .sub_categories": {
+                    display: "block"
+                  }
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: "unset", mr: "10px" }}>
+                  {categoryIcons[item.slug]}
+                </ListItemIcon>
+                {item.name}
+                <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
+                  <ChevronRightIcon />
+                </ListItemIcon>
+                <Box
+                  className="sub_categories"
+                  sx={{
+                    display: "none",
+                    position: "absolute",
+                    left: "100%",
+                    top: 0,
+                    width: "890px",
+                    height: "100%",
+                    bgcolor: "#EDEDED",
+                    boxShadow: "2px 2px 5px rgba(0,0,0,0.1)",
+                    zIndex: 999,
+                    padding: 2,
+                    borderRadius: "6px"
+                  }}
+                >
+                  <Stack spacing={3} direction={"row"} alignItems={"center"}>
+                    {item.children.map((item) => {
+                      return <ListItem key={item.id}>{item.name}</ListItem>
+                    })}
+                  </Stack>
+                </Box>
+              </ListItem>
+            )
+          })}
         </List>
       </Box>
     </Box>

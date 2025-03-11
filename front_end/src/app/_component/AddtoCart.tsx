@@ -67,7 +67,7 @@ const AddtoCart = () => {
         </Stack>
       </Box>
       <Box>
-        <Button variant="contained" sx={{ padding: "13px 100px" }}>
+        <Button variant="contained" sx={{ padding: "13px 80px" }}>
           THÊM VÀO GIỎ
         </Button>
       </Box>

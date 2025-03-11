@@ -61,9 +61,9 @@ function SwiperComemt({ data }: ISwiperCommentsProps) {
         onSlideChange={onSlideChange}
         className="mySwiper"
       >
-        {data.map((item: IComments, index: number) => {
+        {data.map((item: IComments) => {
           return (
-            <SwiperSlide key={item.id || index}>
+            <SwiperSlide key={item.id}>
               <Box sx={{ textAlign: "center" }}>
                 <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
                   <Box

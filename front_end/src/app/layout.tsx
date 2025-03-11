@@ -6,9 +6,9 @@ import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider } from "@mui/material/styles"
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript"
 import theme from "@/theme"
-import Header from "./_component/Header"
-import Footer from "./_component/Footer"
-import Container from "@mui/material/Container"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import Providers from "@/providers/Providers"
 
 const inter = Inter({
   subsets: ["latin"]
@@ -31,11 +31,8 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container maxWidth="xl">
-              <Header />
-              {children}
-              {/* <Footer /> */}
-            </Container>
+            <Providers>{children}</Providers>
+            <ToastContainer position="bottom-left" theme="colored" />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

@@ -5,13 +5,17 @@ import Typography from "@mui/material/Typography"
 import PhonePausedIcon from "@mui/icons-material/PhonePaused"
 import React from "react"
 import DropdownMenu from "./DropdownMenu"
+import { getCategoriesAPI } from "../api/apiwithserver"
 
-const NavigationBar = () => {
+async function NavigationBar() {
   const flexCenter = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
   }
+
+  const categories = await getCategoriesAPI()
+
   return (
     <Box
       sx={{
@@ -20,7 +24,7 @@ const NavigationBar = () => {
         mt: "10px"
       }}
     >
-      <DropdownMenu />
+      <DropdownMenu data={categories.data} />
       <Box sx={{ ml: "36px" }}>
         <List
           sx={{

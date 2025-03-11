@@ -4,6 +4,8 @@ import Header from "@/app/_component/Header"
 import Grid from "@mui/material/Grid2"
 import Box from "@mui/material/Box"
 import MenuProfile from "../_component/MenuProfile"
+import NavigationBar from "../_component/NavigationBar"
+import Container from "@mui/material/Container"
 
 export const metadata: Metadata = {
   title: "Profile Website Clean Food",
@@ -15,9 +17,16 @@ export default function ProfileLayout({
   children: React.ReactNode
 }>) {
   return (
-    <>
-      {/* <Header /> */}
-      <Grid container spacing={2} sx={{ mt: "50px" }}>
+    <Container maxWidth="lg">
+      <Header />
+      <NavigationBar />
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          mt: 5
+        }}
+      >
         <Grid
           size={{
             md: 3
@@ -33,6 +42,6 @@ export default function ProfileLayout({
           <Box>{children}</Box>
         </Grid>
       </Grid>
-    </>
+    </Container>
   )
 }

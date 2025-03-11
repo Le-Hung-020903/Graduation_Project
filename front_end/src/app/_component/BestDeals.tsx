@@ -8,7 +8,7 @@ import { IProduct } from "../_interfaces/product"
 const BestDeals = () => {
   const product: IProduct[] = [
     {
-      id: 0,
+      id: 1,
       category: "Rau củ",
       unit: "kg",
       title: "Dưa chuột đen trắng",
@@ -16,7 +16,7 @@ const BestDeals = () => {
       image: "/images/Icon/cucumber.png"
     },
     {
-      id: 1,
+      id: 2,
       category: "Rau củ",
       unit: "Trái",
       title: "Dưa hấu",
@@ -24,7 +24,7 @@ const BestDeals = () => {
       image: "/images/Icon/watermelon.png"
     },
     {
-      id: 2,
+      id: 3,
       category: "Rau củ",
       unit: "kg",
       title: "Dâu tây",
@@ -32,7 +32,7 @@ const BestDeals = () => {
       image: "/images/Icon/strawberry.png"
     },
     {
-      id: 3,
+      id: 4,
       category: "Rau củ",
       unit: "kg",
       title: "Bí đỏ",
