@@ -32,7 +32,7 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <Providers>{children}</Providers>
-            <ToastContainer position="bottom-left" theme="colored" />
+            <ToastContainer position="top-right" theme="colored" />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

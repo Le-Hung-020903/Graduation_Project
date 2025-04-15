@@ -15,6 +15,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Address } from '../address/entities/address.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -26,9 +27,6 @@ export class User {
 
   @Column({ unique: true })
   email: string;
-
-  @Column({ nullable: true }) // Có thể để trống, mặc định là false thì không được null
-  address: string;
 
   @Column({ default: false })
   status: boolean;
@@ -58,6 +56,7 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users, {
     cascade: true,
     eager: true,
+    onDelete: 'CASCADE', // Xóa user thì xóa luôn trong user_role
   })
   @JoinTable({
     name: 'user_role',
@@ -98,4 +97,10 @@ export class User {
     cascade: true,
   })
   comments: CommentPost[];
+
+  @OneToMany(() => Address, (address) => address.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  addresses: Address[];
 }

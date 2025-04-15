@@ -3,6 +3,7 @@ import {
   IsArray,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   ValidateNested,
 } from 'class-validator';
 import { IngredientItemDto } from './ingredient.item.dto';

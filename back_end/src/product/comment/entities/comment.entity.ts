@@ -22,14 +22,18 @@ export class Comment {
   @Column({ type: 'integer', default: 5 })
   rating: number;
 
-  @Column()
+  @Column({ nullable: true })
   image_url: string;
 
-  @Column()
-  verified_purchase: boolean;
+  @ManyToOne(() => Comment, (comment) => comment.children, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'parent_id' })
+  parent: Comment | null;
 
-  @Column()
-  parent_id: number;
+  @OneToMany(() => Comment, (comment) => comment.parent)
+  children: Comment[];
 
   @ManyToOne(() => User, (user) => user.reviews, {
     onDelete: 'CASCADE',

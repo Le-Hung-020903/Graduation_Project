@@ -12,6 +12,7 @@ import { ManufacturerService } from './manufacturer.service';
 import { CreateManufacturerDto } from './dto/create-manufacturer.dto';
 import { UpdateManufacturerDto } from './dto/update-manufacturer.dto';
 import { ILike } from 'typeorm';
+import { Public } from 'src/Decorator/auth.decorator';
 
 @Controller('manufacturer')
 export class ManufacturerController {
@@ -22,6 +23,12 @@ export class ManufacturerController {
     return this.manufacturerService.create(createManufacturerDto);
   }
 
+  @Public()
+  @Get('/getAll')
+  getAllManufactures() {
+    return this.manufacturerService.getAllManufactures();
+  }
+  @Public()
   @Get()
   findAll(
     @Query()

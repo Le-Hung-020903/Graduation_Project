@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com" // Thêm tên miền Cloudinary
+      },
+      {
+        protocol: "https",
+        hostname: "qr.sepay.vn"
       }
     ]
   }

@@ -23,10 +23,14 @@ export class AuthGuard implements CanActivate {
       IS_PUBLIC_KEY,
       context.getHandler(),
     );
-
+    // console.log(
+    //   `Checking route: ${context.getHandler().name}, isPublic:`,
+    //   isPublic,
+    // );
     if (isPublic) {
       return true; // Trả về true nếu đang ở trang public
     }
+
     const request = context.switchToHttp().getRequest();
     const accessToken: string =
       request.cookies?.accessToken ||

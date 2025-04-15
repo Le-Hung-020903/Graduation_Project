@@ -50,8 +50,21 @@ export class VariantService {
     return `This action returns a #${id} variant`;
   }
 
-  update(id: number, updateVariantDto: UpdateVariantDto) {
-    return `This action updates a #${id} variant`;
+  async update(updateVariantDto: UpdateVariantDto[]): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    if (!updateVariantDto.length) {
+      return {
+        success: false,
+        message: 'Không có biến thể nào để cập nhật',
+      };
+    }
+    await this.variantRepository.save(updateVariantDto);
+    return {
+      success: true,
+      message: 'Cập nhật nguyên liệu thành công',
+    };
   }
 
   remove(id: number) {

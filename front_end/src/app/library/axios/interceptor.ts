@@ -2,9 +2,15 @@
 import axios from "axios"
 import { interceptorLoadingElements } from "@/app/utils/interceptorLoading"
 import { toast } from "react-toastify"
+import { API_ROOT } from "@/app/utils/constants"
 
 // - khởi tạo 1 object Axios (authorizedAxiosInstance) mục đích để custom và cấn hình chung cho dự án.
-const authorizedAxiosInstance = axios.create()
+const authorizedAxiosInstance = axios.create({
+  baseURL: API_ROOT,
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
 
 // - Thời gian chờ tối đa của 1 request: để 10 phút
 authorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10

@@ -18,8 +18,8 @@ export class Discount {
   @Column()
   percent: number;
 
-  @Column({ nullable: true })
-  condition: string;
+  @Column({ unique: true })
+  code_discount: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

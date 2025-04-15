@@ -14,7 +14,11 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    select: false,
+  })
   created_at: Date;
 
   @Column({

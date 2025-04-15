@@ -1,4 +1,8 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateVariantDto } from './create-variant.dto';
+import { CreateVariantItemDto } from './varient-item.dto';
+import { IsOptional } from 'class-validator';
 
-export class UpdateVariantDto extends PartialType(CreateVariantDto) {}
+export class UpdateVariantDto extends PartialType(CreateVariantItemDto) {
+  @IsOptional()
+  updated_at?: Date;
+}

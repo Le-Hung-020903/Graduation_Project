@@ -10,8 +10,8 @@ import { Type } from 'class-transformer';
 export class CreateDiscountDto {
   @IsNotEmpty()
   @IsString()
-  @Length(4, 20, {
-    message: 'Tên phải có ít nhất 4 và tối đa 20 ký tự!',
+  @Length(4, 40, {
+    message: 'Tên phải có ít nhất 4 và tối đa 40 ký tự!',
   })
   content: string;
 
@@ -23,6 +23,13 @@ export class CreateDiscountDto {
     },
   )
   percent: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(3, 15, {
+    message: 'Mã giảm giá phải có ít nhất 3 và tối đa 15 ký tự!',
+  })
+  code_discount: string;
 
   @IsDate()
   @IsNotEmpty()

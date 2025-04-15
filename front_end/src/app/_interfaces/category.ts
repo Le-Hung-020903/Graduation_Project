@@ -4,5 +4,5 @@ export interface ICategory {
   desc?: string
   slug: string
   parent_id?: string
-  children: ICategory[]
+  children?: ICategory[]
 }

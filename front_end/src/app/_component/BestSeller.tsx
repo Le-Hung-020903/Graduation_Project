@@ -14,7 +14,7 @@ const BestSeller = () => {
     color: "primary.main"
   }
   return (
-    <Box sx={{ mt: "102px" }}>
+    <Box sx={{ mt: 15 }}>
       <Stack
         direction={"row"}
         sx={{ justifyContent: "space-between", alignItems: "center" }}

@@ -21,42 +21,111 @@ export class CartService {
   ): Promise<{
     success: boolean;
     message: string;
+    data: Cart;
   }> {
     const { cart_product }: CreateCartDto = createCartDto;
-    const cart = this.cartRepository.create({
-      user: { id: userId },
+    // 🔥 Kiểm tra giỏ hàng có tồn tại không
+    let cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+      relations: ['cartProducts'],
     });
-    const savedCart = await this.cartRepository.save(cart);
-    const cartId: number = savedCart.id;
-    await this.cartProductService.create({
+
+    if (!cart) {
+      // 🛒 Nếu chưa có giỏ hàng thì tạo mới
+      cart = this.cartRepository.create({
+        user: { id: userId },
+        cartProducts: [],
+      });
+      cart = await this.cartRepository.save(cart);
+    }
+
+    // ➕ Thêm sản phẩm mới vào giỏ hàng
+    const newCartProduct = await this.cartProductService.create({
       product_id: cart_product.product_id,
       variant_id: cart_product.variant_id,
       quantity: cart_product.quantity,
       price: cart_product.price,
-      cart_id: cartId,
+      cart_id: cart.id,
     });
+
+    cart.cartProducts.push(newCartProduct);
+    await this.cartRepository.save(cart);
     return {
       success: true,
       message: 'Tạo giỏ hàng thành công',
+      data: cart,
     };
   }
 
-  findAll() {
-    return `This action returns all cart`;
-  }
+  async findByUser(userId: number): Promise<{ success: boolean; data: any }> {
+    const cart = await this.cartRepository
+      .createQueryBuilder('cart')
+      .leftJoinAndSelect('cart.cartProducts', 'cartProduct')
+      .leftJoinAndSelect('cartProduct.product', 'product')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('cartProduct.variant', 'variant')
+      .leftJoinAndSelect('product.variants', 'allVariants')
+      .select([
+        'cart.id', // Chỉ lấy id của cart
+        'cartProduct.id',
+        'cartProduct.quantity',
+        'cartProduct.price',
+        'product.id',
+        'product.name',
+        'images.id',
+        'images.url',
+        'variant.id',
+        'variant.name',
+        'allVariants.id',
+        'allVariants.name',
+      ])
+      .where('cart.user_id = :userId', { userId }) // Lọc theo userId
+      .getOne();
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
+    if (!cart) {
+      throw new NotFoundException('Không tìm thấy giỏ hàng.');
+    }
+
+    return {
+      success: true,
+      data: {
+        id: cart.id,
+        cartProducts: cart.cartProducts.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+          product: {
+            id: item.product.id,
+            name: item.product.name,
+          },
+          images: {
+            id: item.product.images[0].id,
+            url: item.product.images[0].url,
+          },
+          variantSelected: item.variant,
+          variants: item.product.variants.map((v) => ({
+            id: v.id,
+            name: v.name,
+          })),
+        })),
+      },
+    };
   }
 
   async update(
     id: number,
     updateCartDto: UpdateCartDto,
+    userId: number,
   ): Promise<{
     success: boolean;
     message: string;
+    data: CartProduct;
   }> {
-    const cart = await this.cartRepository.findOneBy({ id: id });
+    const cart = await this.cartRepository.findOne({
+      where: { id: Number(id), user: { id: userId } },
+      relations: ['cartProducts'],
+    });
+
     if (!cart) {
       throw new NotFoundException('Giỏ hàng không tồn tại');
     }
@@ -67,18 +136,21 @@ export class CartService {
         product: { id: updateCartDto.cart_product?.product_id },
         variant: { id: updateCartDto.cart_product?.variant_id },
       },
+      relations: ['cart', 'product', 'variant'],
     });
     if (!cartProduct) {
       throw new NotFoundException('Không tìm thấy sản phẩm trong giỏ hàng');
     }
+    cartProduct.quantity =
+      updateCartDto.cart_product?.quantity ?? cartProduct.quantity;
+    cartProduct.price = updateCartDto.cart_product?.price ?? cartProduct.price;
 
-    await this.cartProductService.update(cartProduct.id, {
-      quantity: updateCartDto.cart_product?.quantity,
-      price: updateCartDto.cart_product?.price,
-    });
+    await this.cartProductRepository.save(cartProduct);
+
     return {
       success: true,
       message: 'Cập nhật giỏ hàng thành công',
+      data: cartProduct,
     };
   }
 

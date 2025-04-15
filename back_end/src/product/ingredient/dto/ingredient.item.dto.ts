@@ -1,6 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class IngredientItemDto {
+  @IsOptional()
+  id?: number;
+
   @IsNotEmpty()
   @IsString()
   name: string;

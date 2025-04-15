@@ -25,6 +25,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Public()
   @Get()
   findAll(
     @Query()
@@ -40,7 +41,7 @@ export class UserController {
   ) {
     const {
       _page = 1,
-      _limit = 1,
+      _limit = 6,
       _sort = '',
       _order = '',
       filter_status = '',
@@ -80,6 +81,7 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @Public()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -90,6 +92,7 @@ export class UserController {
     return this.userService.remove(+id);
   }
 
+  // làm khi mà có đăng nhập với accessToken mới làm được
   @Post('roles/:id')
   addRole(@Body() body: CreateRoleDto, @Param('id') id: string) {
     return this.userService.addRole(+id, body);

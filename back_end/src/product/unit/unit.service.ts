@@ -42,4 +42,22 @@ export class UnitService {
       message: 'Cập nhật đơn vị thành công',
     };
   }
+
+  async findAll(): Promise<{
+    success: boolean;
+    message: string;
+    data: Unit[];
+  }> {
+    const unit = await this.unitRepository.find({
+      select: {
+        id: true,
+        symbol: true,
+      },
+    });
+    return {
+      success: true,
+      message: 'Lấy danh sách đơn vị thành công',
+      data: unit,
+    };
+  }
 }

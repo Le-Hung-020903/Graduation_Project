@@ -14,42 +14,55 @@ export class RoleService {
   constructor(
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
   ) {}
-  async create(createRoleDto: CreateRoleDto): Promise<{
-    success: boolean;
-    message: string;
-  }> {
+  async create(createRoleDto: CreateRoleDto): Promise<Role> {
     const { name }: CreateRoleDto = createRoleDto;
     const exitsRole = await this.roleRepository.findOne({
-      where: { name: Like(`${name.trim().toLowerCase()}`) },
+      where: { name },
     });
     if (exitsRole) {
       throw new BadRequestException('Vai trò đã tồn tại');
     }
-    const role = this.roleRepository.create({ name: name.trim() });
-    await this.roleRepository.save(role);
-    return {
-      success: true,
-      message: 'Tạo vai trò thành công',
-    };
+    const role = this.roleRepository.create({
+      name,
+    });
+
+    return await this.roleRepository.save(role);
   }
 
-  findAll() {
-    return `This action returns all role`;
+  async findAll(): Promise<{
+    success: boolean;
+    message: string;
+    data: Role[];
+  }> {
+    const roles = await this.roleRepository
+      .createQueryBuilder('role')
+      .select(['role.id', 'role.name', 'role.created_at'])
+      .getMany();
+    return {
+      success: true,
+      message: 'Lấy vai trò thành công',
+      data: roles,
+    };
   }
 
   async findOne(
     param: string,
   ): Promise<{ success: boolean; message: string; data: Role }> {
-    let role: Role | null;
-    if (!isNaN(+param)) {
-      role = await this.roleRepository.findOne({ where: { id: +param } });
+    const query = this.roleRepository
+      .createQueryBuilder('role')
+      .leftJoinAndSelect('role.permissions', 'permission')
+      .select(['role.id', 'role.name', 'role.created_at', 'permission.value']);
+
+    // Kiểm tra ID hay tên
+    const isId = !isNaN(+param);
+    if (isId) {
+      query.where('role.id = :id', { id: +param });
     } else {
-      role = await this.roleRepository.findOne({
-        where: {
-          name: ILike(`${param.trim()}%`),
-        },
-      });
+      query.where('role.name ILIKE :name', { name: `${param.trim()}%` });
     }
+
+    const role = await query.getOne();
+
     if (!role) {
       throw new NotFoundException('Vai trò không tồn tại');
     }

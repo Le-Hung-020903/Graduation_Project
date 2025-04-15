@@ -27,13 +27,16 @@ export class CreateProductDto {
   manufacturer_id: number;
 
   @IsString()
-  desc: string;
+  desc_html: string;
 
-  // @IsArray()
-  // @ArrayMinSize(1, { message: 'Cần ít nhất một nguyên liệu' })
-  // @ValidateNested({ each: true })
-  // @Type(() => IngredientItemDto)
-  // ingredients: IngredientItemDto[];
+  @IsString()
+  desc_markdown: string;
+
+  @IsArray()
+  @ArrayMinSize(1, { message: 'Cần ít nhất một nguyên liệu' })
+  @ValidateNested({ each: true })
+  @Type(() => IngredientItemDto)
+  ingredients: IngredientItemDto[];
 
   @IsArray()
   @ArrayMinSize(1, { message: 'Cần ít nhất một biến thể' })

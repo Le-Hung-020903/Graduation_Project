@@ -18,12 +18,22 @@ export class DiscountService {
   async create(
     createDiscountDto: CreateDiscountDto,
   ): Promise<{ success: boolean; message: string; data: Discount }> {
-    const { content, percent, start_date, end_date } = createDiscountDto;
-    if (!content || !percent || !start_date || !end_date) {
+    const { content, percent, start_date, end_date, code_discount } =
+      createDiscountDto;
+    if (!content || !percent || !start_date || !end_date || !code_discount) {
       throw new BadRequestException('Vui lòng điền đầy đủ các trường!');
+    }
+    // find() luôn trả về một mảng, ngay cả khi không tìm thấy gì → if (exitsDiscount) luôn đúng.
+    // findOne() chỉ trả về một đối tượng hoặc null → điều kiện kiểm tra hợp lệ hơn.
+    const exitsDiscount = await this.discountRepository.findOne({
+      where: { code_discount },
+    });
+    if (exitsDiscount) {
+      throw new BadRequestException('Mã giảm giá đã tồn tại!');
     }
     const discount = this.discountRepository.create({
       content: content.trim(),
+      code_discount: code_discount.trim(),
       percent,
       start_date,
       end_date,
@@ -107,6 +117,20 @@ export class DiscountService {
     return {
       success: true,
       message: 'Xoá khuyến mãi thành công',
+    };
+  }
+  async findDiscountList(): Promise<{
+    success: boolean;
+    message: string;
+    data: Discount[];
+  }> {
+    const discountList = await this.discountRepository.find({
+      select: ['id', 'end_date', 'content', 'percent'],
+    });
+    return {
+      success: true,
+      message: 'Lấy danh sách khuyến mãi thành công',
+      data: discountList,
     };
   }
 }

@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsString, Length, Matches } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -31,4 +39,9 @@ export class CreateUserDto {
     message: 'Vui lòng nhập đúng định dạng số điện thoại',
   })
   phone: string;
+
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  status?: boolean;
 }

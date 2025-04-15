@@ -33,7 +33,7 @@ export class OrderDetailController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateOrderDetailDto: UpdateOrderDetailDto,
+    @Body() updateOrderDetailDto: UpdateOrderDetailDto[],
   ) {
     return this.orderDetailService.update(+id, updateOrderDetailDto);
   }

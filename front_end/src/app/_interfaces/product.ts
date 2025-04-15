@@ -1,3 +1,42 @@
+export interface IProduct {
+  id: number
+  name: string
+  slug: string
+  desc: string
+  created_at: string // Hoặc Date nếu bạn parse sang kiểu Date trong frontend
+  images: IProductImage[]
+  category: ICategory
+  manufacturer: IManufacturer
+  ingredients: IIngredient[]
+  variants: IVariant[]
+}
+
+interface IProductImage {
+  id: number
+  url: string
+}
+
+interface ICategory {
+  id: number
+  name: string
+  desc: string | null
+  slug: string
+}
+
+interface IManufacturer {
+  id: number
+  name: string
+  address: string
+  phone: string
+  email: string
+}
+
+interface IIngredient {
+  id: number
+  name: string
+  info: string
+}
+
 export interface IVariant {
   id: number
   name: string
@@ -12,35 +51,20 @@ export interface IVariant {
     symbol: string
   }
 }
-
-export interface IProduct {
+export interface IProductListItem {
   id: number
   name: string
   slug: string
-  desc: string
-  created_at: string // Hoặc có thể sử dụng kiểu Date nếu bạn chuyển đổi từ string sang Date
-  images: Array<{
-    id: number
-    url: string
-  }>
   category: {
-    id: number
-    name: string
-    desc: string | null
-    parent_id: number | null
-    slug: string
+    name: string // Tên danh mục
   }
-  manufacturer: {
-    id: number
-    name: string
-    address: string
-    phone: string
-    email: string
-  }
-  ingredients: Array<{
-    id: number
-    name: string
-    info: string
+  images: Array<{
+    url: string // Ảnh sản phẩm
   }>
-  variants: IVariant[]
+  variants: Array<{
+    price: number // Giá sản phẩm
+    unit: {
+      symbol: string // Ký hiệu đơn vị (vd: kg, g, L...)
+    }
+  }>
 }

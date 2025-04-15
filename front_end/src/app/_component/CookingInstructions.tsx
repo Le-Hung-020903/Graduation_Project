@@ -5,7 +5,7 @@ import Image from "next/image"
 import Grid from "@mui/material/Grid2"
 
 const CookingInstructions = () => (
-  <Box sx={{ mt: "70px" }}>
+  <Box sx={{ mt: 15 }}>
     <Box
       sx={{
         display: "flex",
@@ -33,7 +33,7 @@ const CookingInstructions = () => (
         Mua tất cả sản phẩm
       </Typography>
     </Box>
-    <Grid container spacing={3} sx={{ mt: "60px" }}>
+    <Grid container spacing={3} sx={{ mt: 7 }}>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Image
           src="/images/Icon/book-01.png"

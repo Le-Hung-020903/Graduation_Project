@@ -33,9 +33,9 @@ export class IngredientController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateIngredientDto: UpdateIngredientDto,
+    @Body() updateIngredientDto: UpdateIngredientDto[],
   ) {
-    return this.ingredientService.update(+id, updateIngredientDto);
+    return this.ingredientService.update(updateIngredientDto);
   }
 
   @Delete(':id')

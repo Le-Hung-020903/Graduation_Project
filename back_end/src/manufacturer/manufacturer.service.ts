@@ -123,4 +123,17 @@ export class ManufacturerService {
       message: 'Xoá nhà sản xuất thành công',
     };
   }
+  async getAllManufactures() {
+    const manufacturers = await this.manufacturerRepository.find({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    return {
+      success: true,
+      message: 'Lấy danh sách nhà sản xuất thành công',
+      data: manufacturers,
+    };
+  }
 }

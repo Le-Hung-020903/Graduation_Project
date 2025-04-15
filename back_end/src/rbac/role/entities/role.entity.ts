@@ -5,7 +5,6 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -20,7 +19,6 @@ export class Role {
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
-    select: false,
   })
   created_at: Date;
 
@@ -32,8 +30,9 @@ export class Role {
   updated_at: Date;
 
   @ManyToMany(() => Permission, (permission) => permission.roles, {
-    cascade: true,
-    eager: true,
+    cascade: true, // Đảm bảo tạo mới và cập nhật cũng tự động
+    eager: true, // Load sẵn permission khi lấy role
+    onDelete: 'CASCADE', // Khi xóa Role, xóa luôn trong role_permission
   })
   @JoinTable({
     name: 'role_permission',
@@ -42,6 +41,8 @@ export class Role {
   })
   permissions: Permission[];
 
-  @ManyToMany(() => User, (user) => user.roles)
+  @ManyToMany(() => User, (user) => user.roles, {
+    onDelete: 'CASCADE',
+  })
   users: User[];
 }

@@ -1,12 +1,85 @@
+import { IOrder } from "../_interfaces/order"
+import { IFormDataReview } from "../_interfaces/reviews"
+import { IAddress, IUser } from "../_interfaces/user"
 import authorizedAxiosInstance from "../library/axios/interceptor"
-import { API_ROOT } from "../utils/constants"
-import { toast } from "react-toastify"
 
 // USER
-export const registerUserAPI = async (data) => {
-  const res = await authorizedAxiosInstance.post(
-    `${API_ROOT}/user/create`,
-    data
+export const registerUserAPI = async (data: IUser) => {
+  const res = await authorizedAxiosInstance.post(`/user/create`, data)
+  return res.data
+}
+
+// DISCOUNT
+export const getDiscountAPI = async () => {
+  const res = await authorizedAxiosInstance.get(`/discount/getAll`)
+  return res.data
+}
+
+// ADDRESS
+export const createAddressAPI = async (data: IAddress) => {
+  const res = await authorizedAxiosInstance.post(`/address/create`, data)
+  return res.data
+}
+export const getAddressAPI = async () => {
+  const res = await authorizedAxiosInstance.get(`/address`)
+  return res.data
+}
+
+// ORDER
+export const createOrderAPI = async (data: IOrder) => {
+  const res = await authorizedAxiosInstance.post(`/order/create`, data)
+  return res.data
+}
+
+export const checkStatusOrderAPI = async (order_code: string) => {
+  const res = await authorizedAxiosInstance.get(
+    `/order/check_status/${order_code}`
+  )
+  return res.data
+}
+export const checkExistOrderAPI = async () => {
+  const res = await authorizedAxiosInstance.get(`/order/check_exits_order`)
+  return res.data
+}
+export const updateOrderAPI = async (orderId: number, data: IOrder) => {
+  const res = await authorizedAxiosInstance.patch(`/order/${orderId}`, data)
+  return res.data
+}
+
+// CART
+export const createCartAPI = async (cart_product: {
+  quantity: number
+  product_id: number
+  variant_id: number
+  price: number
+}) => {
+  const res = await authorizedAxiosInstance.post(`/cart/create`, {
+    cart_product
+  })
+  return res.data
+}
+
+// PRODUCTS
+export const getProductsAPI = async (page: number, limit: number) => {
+  const res = await authorizedAxiosInstance.get(
+    `/product?_page=${page}&_limit=${limit}`
+  )
+  return res.data
+}
+
+// REVIEWS
+export const createReviewAPI = async (data: IFormDataReview) => {
+  const res = await authorizedAxiosInstance.post(`/comment/create`, data)
+  return res.data
+}
+
+export const getReviewsAPI = async (
+  productId: number,
+  page: number,
+  limit: number
+) => {
+  const res = await authorizedAxiosInstance.get(
+    `/comment/${productId}?_page=${page}&_limit=${limit}`
   )
   return res.data
 }

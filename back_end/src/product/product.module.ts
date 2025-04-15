@@ -13,12 +13,13 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { FavoriteProductModule } from './favorite_product/favorite_product.module';
 import { CommentModule } from './comment/comment.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { Category } from 'src/category/entities/category.entity';
 
 @Module({
   controllers: [ProductController],
   providers: [ProductService],
   imports: [
-    TypeOrmModule.forFeature([Product]),
+    TypeOrmModule.forFeature([Product, Category]),
     VariantModule,
     UnitModule,
     IngredientModule,

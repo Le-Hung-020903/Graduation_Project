@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -10,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { IsNull, Repository } from 'typeorm';
 import Slug from 'src/utils/slug';
-import { AuthGuard } from 'src/guards/auth.guard';
 
 @Injectable()
 export class CategoryService {
@@ -45,19 +43,36 @@ export class CategoryService {
     };
   }
 
-  async findAll(): Promise<{
+  async findAll(
+    page: number,
+    limit: number,
+  ): Promise<{
     success: boolean;
     message: string;
     data: Category[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
   }> {
-    const category = await this.categoryRepository.find({
-      where: { parent: IsNull() },
-      relations: ['children'],
+    const skip = (page - 1) * limit;
+    const [categories, total] = await this.categoryRepository.findAndCount({
+      relations: ['parent'],
+      take: limit,
+      skip,
     });
     return {
       success: true,
       message: 'Lấy tất cả danh mục thành công',
-      data: category,
+      data: categories,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     };
   }
 
@@ -115,6 +130,42 @@ export class CategoryService {
     return {
       success: true,
       message: 'Xoá danh mục thành công',
+    };
+  }
+  async getAllCategories() {
+    const categories = await this.categoryRepository.find({
+      where: {
+        parent: IsNull(),
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+      relations: ['children'],
+    });
+    return {
+      success: true,
+      message: 'Lấy tất cả danh mục thành công',
+      data: categories,
+    };
+  }
+
+  async getParentCategory() {
+    const categories = await this.categoryRepository.find({
+      where: {
+        parent: IsNull(),
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    });
+    return {
+      success: true,
+      message: 'Lấy danh mục cha thành công',
+      data: categories,
     };
   }
 }

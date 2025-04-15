@@ -29,6 +29,8 @@ export class Permission {
   })
   updated_at: Date;
 
-  @ManyToMany(() => Role, (role) => role.permissions)
+  @ManyToMany(() => Role, (role) => role.permissions, {
+    onDelete: 'CASCADE', // Khi xóa Permission, xóa luôn trong role_permission
+  })
   roles: Role[];
 }

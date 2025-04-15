@@ -24,10 +24,10 @@ async function bootstrap() {
     }),
   ); // Tự động validate khi có request
   app.enableCors({
-    origin: 'http://localhost:8080', // ✅ Chỉ cho phép request từ frontend chạy tại localhost:8080
+    origin: ['http://localhost:8080', 'http://localhost:3636'], // ✅ Chỉ cho phép request từ frontend chạy tại localhost:8080 và localhost:3636
     credentials: true, // ✅ Cho phép gửi cookies, authorization headers (JWT, session...)
     allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Chỉ cho phép 2 loại header này
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ Chỉ cho phép các method này
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // ✅ Chỉ cho phép các method này
   });
 
   app.use(cookieParser());

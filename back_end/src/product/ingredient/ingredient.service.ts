@@ -43,8 +43,21 @@ export class IngredientService {
     return `This action returns a #${id} ingredient`;
   }
 
-  update(id: number, updateIngredientDto: UpdateIngredientDto) {
-    return `This action updates a #${id} ingredient`;
+  async update(updateIngredientDto: UpdateIngredientDto[]): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    if (!updateIngredientDto.length) {
+      return {
+        success: false,
+        message: 'Không có nguyên liệu nào để cập nhật',
+      };
+    }
+    await this.ingredientRepository.save(updateIngredientDto);
+    return {
+      success: true,
+      message: 'Cập nhật nguyên liệu thành công',
+    };
   }
 
   remove(id: number) {

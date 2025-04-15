@@ -18,3 +18,14 @@ export interface IUser {
   exp?: number
   accessToken?: string
 }
+
+export interface IAddress {
+  id?: number
+  name: string
+  phone: string
+  province: string
+  district: string
+  ward: string
+  street: string
+  is_default: boolean
+}

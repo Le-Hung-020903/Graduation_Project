@@ -5,10 +5,12 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderDetail } from '../order_detail/entities/order_detail.entity';
 import { Discount } from 'src/discount/entities/discount.entity';
+import { Address } from 'src/user/address/entities/address.entity';
 
 @Entity({ name: 'orders' })
 export class Order {
@@ -19,13 +21,7 @@ export class Order {
   total_price: number;
 
   @Column()
-  recipient_name: string;
-
-  @Column()
-  recipient_phone: string;
-
-  @Column()
-  shipping_address: string;
+  final_price: number;
 
   @Column({ type: 'text', nullable: true })
   note: string;
@@ -36,6 +32,23 @@ export class Order {
     default: 'PENDING',
   })
   status: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['COD', 'QR_PAYMENT'],
+    default: 'COD',
+  })
+  payment_method: string;
+
+  @Column({ unique: true })
+  order_code: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['UNPAID', 'PAID', 'CANCELLED', 'REFUNDED'],
+    default: 'UNPAID',
+  })
+  payment_status: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
@@ -61,5 +74,13 @@ export class Order {
     onDelete: 'SET NULL',
     nullable: true,
   })
+  @JoinColumn({ name: 'discount_id' })
   discount: Discount;
+
+  @OneToOne(() => Address, (address) => address.order, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'address_id' })
+  address: Address;
 }

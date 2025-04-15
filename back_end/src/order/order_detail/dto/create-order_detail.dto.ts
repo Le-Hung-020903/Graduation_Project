@@ -1,5 +1,8 @@
 import { IsInt, IsNotEmpty, IsOptional, Min } from 'class-validator';
 export class CreateOrderDetailDto {
+  @IsOptional()
+  id?: number;
+
   @IsNotEmpty()
   @IsInt({ message: 'số lượng phải là số dương' })
   @Min(1, { message: 'Số lượng phải lớn hơn 0' })

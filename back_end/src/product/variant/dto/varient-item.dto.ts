@@ -8,10 +8,13 @@ import {
 } from 'class-validator';
 
 export class CreateVariantItemDto {
+  @IsOptional()
+  id?: number;
+
   @IsNotEmpty()
   @IsString()
-  @Length(2, 30, {
-    message: 'Tên phải có ít nhất 2 và tối đa 30 ký tự!',
+  @Length(2, 40, {
+    message: 'Tên phải có ít nhất 2 và tối đa 40 ký tự!',
   })
   name: string;
 

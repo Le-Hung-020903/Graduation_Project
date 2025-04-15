@@ -27,7 +27,10 @@ export class Product {
   slug: string;
 
   @Column({ type: 'text' })
-  desc: string;
+  desc_html: string;
+
+  @Column({ type: 'text' })
+  desc_markdown: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

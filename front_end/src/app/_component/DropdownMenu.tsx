@@ -8,6 +8,7 @@ import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import SetMealIcon from "@mui/icons-material/SetMeal"
 import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemButton from "@mui/material/ListItemButton"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import Image from "next/image"
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism"
@@ -16,6 +17,7 @@ import EmojiFoodBeverageIcon from "@mui/icons-material/EmojiFoodBeverage"
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech"
 import { ICategory } from "../_interfaces/category"
 import { Stack } from "@mui/material"
+import Link from "next/link"
 interface ICategoriesProps {
   data: ICategory[]
 }
@@ -147,18 +149,34 @@ const DropdownMenu = ({ data }: ICategoriesProps) => {
               <ListItem
                 key={item.id}
                 sx={{
+                  position: "relative",
+                  cursor: "pointer",
                   "&:hover .sub_categories": {
                     display: "block"
                   }
                 }}
               >
-                <ListItemIcon sx={{ minWidth: "unset", mr: "10px" }}>
-                  {categoryIcons[item.slug]}
-                </ListItemIcon>
-                {item.name}
-                <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
-                  <ChevronRightIcon />
-                </ListItemIcon>
+                {/* Link cho danh mục cha */}
+                <Link
+                  href={`/products/${item.slug}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    textDecoration: "none",
+                    color: "inherit"
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: "unset", mr: "10px" }}>
+                    {categoryIcons[item.slug]}
+                  </ListItemIcon>
+                  {item.name}
+                  <ListItemIcon sx={{ minWidth: "unset", ml: "auto" }}>
+                    <ChevronRightIcon />
+                  </ListItemIcon>
+                </Link>
+
+                {/* Danh mục con (sub_categories) */}
                 <Box
                   className="sub_categories"
                   sx={{
@@ -175,10 +193,19 @@ const DropdownMenu = ({ data }: ICategoriesProps) => {
                     borderRadius: "6px"
                   }}
                 >
-                  <Stack spacing={3} direction={"row"} alignItems={"center"}>
-                    {item.children.map((item) => {
-                      return <ListItem key={item.id}>{item.name}</ListItem>
-                    })}
+                  <Stack spacing={3} direction="row" alignItems="center">
+                    {item.children?.map((child) => (
+                      <Link
+                        key={child.id}
+                        href={`/products/${child.slug}`}
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit"
+                        }}
+                      >
+                        <Typography component="p">{child.name}</Typography>
+                      </Link>
+                    ))}
                   </Stack>
                 </Box>
               </ListItem>

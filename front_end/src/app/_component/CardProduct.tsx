@@ -1,4 +1,3 @@
-import Grid from "@mui/material/Grid2"
 import Box from "@mui/material/Box"
 import React from "react"
 import Card from "@mui/material/Card"
@@ -10,24 +9,52 @@ import Stack from "@mui/material/Stack"
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag"
 import Typography from "@mui/material/Typography"
 import FavoriteButton from "./FavoriteButton"
+import { IProductListItem } from "../_interfaces/product"
+import Link from "next/link"
 
-const CardProduct = () => {
+interface CardProductProps {
+  product: IProductListItem
+}
+type PageProps = {
+  params: Promise<{ product: IProductListItem }>
+}
+export const generateMetadata = async ({ params }: PageProps) => {
+  const { product } = await params
+  return {
+    title: product.name,
+    description: `${product.name} product details`
+  }
+}
+
+const CardProduct: React.FC<CardProductProps> = ({ product }) => {
+  if (!product) return null
+
+  const { name, images, category, variants, slug } = product
+  const price = variants?.[0]?.price || 0
+  const unitSymbol = variants?.[0]?.unit?.symbol || ""
+
   return (
-    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+    <Link
+      href={`/${slug}`}
+      style={{
+        textDecoration: "none"
+      }}
+    >
       <Box
         sx={{
           position: "relative",
+          paddingBottom: "0px",
+          transition: "box-shadow 0.3s ease",
+          width: "100%", // ⚠️ Bắt buộc
+          minWidth: 0, // ⚠️ Quan trọng: Fix overflow MUI
+          display: "flex",
+          flexDirection: "column",
           border: "1px solid #E2E3E4",
           borderRadius: "16px",
           overflow: "hidden",
-          // transition: "padding-bottom 0.3s ease",
-          paddingBottom: "0px",
-          transition: "box-shadow 0.3s ease",
 
           "&:hover": {
-            // paddingBottom: "15px",
-            boxShadow: "0 0 0 1px #EEC73E", // Sử dụng outline thay vì border
-            overflow: "hidden",
+            boxShadow: "0 0 0 1px #EEC73E",
             cursor: "pointer"
           },
           "&:hover .box-favorite-button": {
@@ -42,20 +69,37 @@ const CardProduct = () => {
         }}
       >
         <Card>
-          <CardMedia
-            component="img"
-            alt="Ảnh sản phẩm"
-            height="200"
-            image="images/Icon/pumpkin.png"
-            sx={{ p: 2, mt: "24px" }}
-          />
+          <Box
+            sx={{
+              height: 200, // Cố định chiều cao
+              width: "100%", // Chiếm toàn bộ chiều rộng
+              display: "flex",
+              alignItems: "center", // Canh giữa theo chiều dọc
+              justifyContent: "center", // Canh giữa theo chiều ngang
+              p: 2
+            }}
+          >
+            <CardMedia
+              component="img"
+              alt={name}
+              image={`${images?.[0]?.url ? images?.[0]?.url : ""}`}
+              sx={{
+                p: 2,
+                mt: "24px",
+                objectFit: "cover",
+                width: "100%",
+                height: "100%"
+              }}
+            />
+          </Box>
           <Stack
             direction={"row"}
             sx={{
               justifyContent: "space-between",
               alignItems: "flex-end",
               mt: "57px",
-              mb: "35px"
+              mb: "35px",
+              flexGrow: 1
             }}
           >
             <CardContent sx={{ py: 1 }}>
@@ -69,7 +113,7 @@ const CardProduct = () => {
                     lineHeight: "16px"
                   }}
                 >
-                  Đồ uống
+                  {category?.name || "Không xác định"}
                 </Typography>
                 <Typography
                   component="p"
@@ -79,7 +123,7 @@ const CardProduct = () => {
                     lineHeight: "16px"
                   }}
                 >
-                  Ví Cotton Trơn
+                  {name}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                   <Typography
@@ -99,7 +143,7 @@ const CardProduct = () => {
                       lineHeight: "16px"
                     }}
                   >
-                    Kg
+                    {unitSymbol}
                   </Typography>
                 </Stack>
                 <Typography
@@ -111,23 +155,11 @@ const CardProduct = () => {
                     lineHeight: "20px"
                   }}
                 >
-                  100.000
-                  <Typography
-                    component="span"
-                    color="primary.main"
-                    sx={{
-                      fontWeight: "600",
-                      fontSize: "14px",
-                      lineHeight: "20px"
-                    }}
-                  >
-                    VND
-                  </Typography>
+                  {`${price.toLocaleString()} VNĐ`}
                 </Typography>
               </Stack>
             </CardContent>
             <CardActions sx={{ mr: "15px" }}>
-              {/* Button hãy để thành useClient để có thể làm các sự kiện */}
               <Button
                 className="add-to-cart"
                 variant="contained"
@@ -146,7 +178,7 @@ const CardProduct = () => {
                   borderRadius: "7px",
                   width: "40px",
                   p: 0,
-                  minWidth: "40px", // Xóa min-width mặc định của Button
+                  minWidth: "40px",
                   borderBottomRightRadius: "18px",
                   transition: "border-radius 0.3s ease",
                   "&:hover": {
@@ -168,7 +200,7 @@ const CardProduct = () => {
                 position: "absolute",
                 top: "20px",
                 right: "14px",
-                transition: " 0.3s ease"
+                transition: "0.3s ease"
               }}
             >
               <FavoriteButton />
@@ -176,7 +208,7 @@ const CardProduct = () => {
           </Stack>
         </Card>
       </Box>
-    </Grid>
+    </Link>
   )
 }
 

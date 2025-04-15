@@ -42,7 +42,11 @@ import { Transaction } from './product/transaction/entities/transaction.entity';
 import { PostModule } from './post/post.module';
 import { Post } from './post/entities/post.entity';
 import { CommentPost } from './post/comment_post/entities/comment_post.entity';
-
+import { Modules } from './modules/entities/module.entity';
+import { Action } from './modules/action/entities/action.entity';
+import { ModulesModule } from './modules/modules.module';
+import { Address } from './user/address/entities/address.entity';
+import { CommentModule } from './product/comment/comment.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -81,6 +85,9 @@ import { CommentPost } from './post/comment_post/entities/comment_post.entity';
           Transaction,
           Post,
           CommentPost,
+          Modules,
+          Action,
+          Address,
         ],
         synchronize: true,
         // logging: true,
@@ -100,6 +107,8 @@ import { CommentPost } from './post/comment_post/entities/comment_post.entity';
     RbacModule,
     InventoryModule,
     PostModule,
+    ModulesModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [

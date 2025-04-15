@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -29,7 +30,7 @@ export class UserService {
       },
     });
     if (exitsEmail) {
-      throw new HttpException('Email đã tồn tại', HttpStatus.BAD_REQUEST);
+      throw new ConflictException('Email đã tồn tại');
     }
 
     const hashPassword: string = Hash.make(createUserDto.password);
@@ -59,16 +60,7 @@ export class UserService {
     const orderField = order.toLowerCase();
 
     const [user, total] = await this.userRepository.findAndCount({
-      select: [
-        'id',
-        'name',
-        'email',
-        'address',
-        'status',
-        'phone',
-        'avatar',
-        'created_at',
-      ],
+      select: ['id', 'name', 'email', 'status', 'phone', 'created_at'],
       take: limit,
       skip,
       where: filter,
@@ -96,7 +88,6 @@ export class UserService {
         'id',
         'name',
         'email',
-        'address',
         'status',
         'phone',
         'avatar',
@@ -119,7 +110,16 @@ export class UserService {
     updateUserDto.updated_at = new Date();
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new HttpException('User không tồn tại', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Không tìm thấy người dùng');
+    }
+    // Nếu email thay đổi, kiểm tra xem có user nào khác đang dùng email này không
+    if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const existingUser = await this.userRepository.findOne({
+        where: { email: updateUserDto.email },
+      });
+      if (existingUser) {
+        throw new ConflictException('Email đã tồn tại');
+      }
     }
     await this.userRepository.update(id, updateUserDto);
     return {
