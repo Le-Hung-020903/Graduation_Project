@@ -14,12 +14,13 @@ import { FavoriteProductModule } from './favorite_product/favorite_product.modul
 import { CommentModule } from './comment/comment.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { Category } from 'src/category/entities/category.entity';
+import { FavoriteProduct } from './favorite_product/entities/favorite_product.entity';
 
 @Module({
   controllers: [ProductController],
   providers: [ProductService],
   imports: [
-    TypeOrmModule.forFeature([Product, Category]),
+    TypeOrmModule.forFeature([Product, Category, FavoriteProduct]),
     VariantModule,
     UnitModule,
     IngredientModule,

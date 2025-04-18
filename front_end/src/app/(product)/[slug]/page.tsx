@@ -1,3 +1,4 @@
+import { cookies } from "next/headers"
 import Box from "@mui/material/Box"
 import Image from "next/image"
 import React from "react"
@@ -33,7 +34,9 @@ interface PageProps {
 
 async function PageDetail({ params }: PageProps) {
   const { slug } = await params
-  const data = await getProductDetail(slug)
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+  const data = await getProductDetail(slug, accessToken)
   const product = data.data
 
   const categoryPath: { name: string; slug: string; depth: number }[] =
@@ -150,7 +153,10 @@ async function PageDetail({ params }: PageProps) {
                 </Box>
                 <Box sx={{ mt: "18px" }}>
                   <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                    <FavoriteButton />
+                    <FavoriteButton
+                      isFavorite={product.isFavorite}
+                      productId={product.id}
+                    />
                     <Typography
                       sx={{
                         fontSize: "12px",

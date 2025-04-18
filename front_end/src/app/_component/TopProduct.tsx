@@ -1,3 +1,4 @@
+import { cookies } from "next/headers"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import React from "react"
@@ -10,8 +11,11 @@ import { Button } from "@mui/material"
 import Link from "next/link"
 
 async function TopProduct() {
-  const data = await getProductList(1, 8)
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+  const data = await getProductList(1, 8, undefined, accessToken)
   const productList: IProductListItem[] = data?.data || []
+
   return (
     <Box sx={{ mt: 9 }}>
       <Typography

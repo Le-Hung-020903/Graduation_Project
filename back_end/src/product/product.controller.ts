@@ -10,6 +10,7 @@ import {
   BadRequestException,
   UploadedFiles,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -45,6 +46,7 @@ export class ProductController {
   @Public()
   @Get()
   findAllWithoutCategory(
+    @Req() req,
     @Query()
     query: {
       _page?: string;
@@ -53,19 +55,22 @@ export class ProductController {
       _sort_price?: string;
     },
   ) {
+    const userId = req?.user?.userId;
     const { _page = 1, _limit = 6, _sort_price = '', q = '' } = query;
     return this.productService.findAll(
       Number(_limit),
       Number(_page),
       q,
       _sort_price,
+      Number(userId),
     );
   }
 
   @Public()
   @Get(':param')
-  findOne(@Param('param') param: string) {
-    return this.productService.findOne(param);
+  findOne(@Param('param') param: string, @Req() req) {
+    const userId = req?.user?.userId;
+    return this.productService.findOne(param, Number(userId));
   }
 
   @Public()

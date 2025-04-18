@@ -9,6 +9,7 @@ export interface IProduct {
   manufacturer: IManufacturer
   ingredients: IIngredient[]
   variants: IVariant[]
+  isFavorite: boolean
 }
 
 interface IProductImage {
@@ -67,4 +68,5 @@ export interface IProductListItem {
       symbol: string // Ký hiệu đơn vị (vd: kg, g, L...)
     }
   }>
+  isFavorite: boolean
 }

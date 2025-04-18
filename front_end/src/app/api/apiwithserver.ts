@@ -5,7 +5,8 @@ import { API_ROOT } from "../utils/constants"
 
 // PRODUCT
 export const getProductDetail = async (
-  slug: string
+  slug: string,
+  accessToken?: string
 ): Promise<{
   success: boolean
   message: string
@@ -14,17 +15,35 @@ export const getProductDetail = async (
   error?: string
   statusCode?: number
 }> => {
-  const res = await fetch(`${API_ROOT}/product/${slug}`)
+  const headers: Record<string, string> = {}
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`
+  }
+  const res = await fetch(`${API_ROOT}/product/${slug}`, {
+    method: "GET", // Cần khai báo method nếu không dùng mặc định
+    credentials: "include", // Đảm bảo cookie được gửi kèm theo request,
+    headers
+  })
   return res.json()
 }
 
 export const getProductList = async (
   page: number,
   limit: number,
-  slug?: string
+  slug?: string,
+  accessToken?: string
 ) => {
+  const headers: Record<string, string> = {}
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`
+  }
   const res = await fetch(
-    `${API_ROOT}/product?_page=${page}&_limit=${limit}&q=${slug ? slug : ""}`
+    `${API_ROOT}/product?_page=${page}&_limit=${limit}&q=${slug ? slug : ""}`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers
+    }
   )
   return res.json()
 }

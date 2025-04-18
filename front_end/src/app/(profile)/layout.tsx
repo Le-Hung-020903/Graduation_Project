@@ -22,7 +22,7 @@ export default function ProfileLayout({
       <NavigationBar />
       <Grid
         container
-        spacing={2}
+        spacing={7}
         sx={{
           mt: 5
         }}

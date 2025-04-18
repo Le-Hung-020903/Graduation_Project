@@ -22,8 +22,8 @@ const page = () => {
       <TopProduct />
       <CookingInstructions />
       <BestSeller />
-      <BestDeals />
-      <Comments />
+      {/* <BestDeals /> */}
+      {/* <Comments /> */}
       <Footer />
     </Container>
   )

@@ -16,6 +16,7 @@ import { VariantService } from './variant/variant.service';
 import { UpdateIngredientDto } from './ingredient/dto/update-ingredient.dto';
 import { UpdateVariantDto } from './variant/dto/update-variant.dto';
 import { Category } from 'src/category/entities/category.entity';
+import { FavoriteProduct } from './favorite_product/entities/favorite_product.entity';
 
 @Injectable()
 export class ProductService {
@@ -24,6 +25,8 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(FavoriteProduct)
+    private readonly favoriteProductRepository: Repository<FavoriteProduct>,
     private readonly cloudinaryService: CloudinaryService,
     private readonly productImageService: ProductImageService,
     private readonly ingredientService: IngredientService,
@@ -96,6 +99,7 @@ export class ProductService {
     page: number,
     categorySlug?: string,
     _sort_price?: string,
+    userId?: number,
   ): Promise<{
     success: boolean;
     message: string;
@@ -120,6 +124,7 @@ export class ProductService {
     // Nếu có categorySlug thì lấy id của danh mục đó
     let categoryIds: number[] = [];
     let breadCrumb: { name: string; slug: string; depth: number }[] = [];
+
     if (categorySlug) {
       const category = await this.categoryRepository.findOne({
         where: { slug: categorySlug },
@@ -179,10 +184,28 @@ export class ProductService {
 
     const [products, total] = await queryBuilder.getManyAndCount();
 
+    // Lấy sản phẩm yêu thích khi có id người dùng
+    const favoriteProduct = userId
+      ? await this.favoriteProductRepository
+          .createQueryBuilder('fp')
+          .leftJoin('fp.product', 'product')
+          .where('fp.user_id = :userId', { userId })
+          .select('product.id', 'product')
+          .getRawMany()
+      : [];
+    const favoriteProductIds = new Set(
+      favoriteProduct.map((item) => item.product),
+    );
+
+    const results = products.map((item) => ({
+      ...item,
+      isFavorite: favoriteProductIds.has(item.id),
+    }));
+
     return {
       success: true,
       message: 'Lấy danh sách sản phẩm thành công',
-      data: products,
+      data: results,
       pagination: {
         total,
         page,
@@ -193,7 +216,10 @@ export class ProductService {
     };
   }
 
-  async findOne(param: string): Promise<{
+  async findOne(
+    param: string,
+    userId?: number,
+  ): Promise<{
     success: boolean;
     message: string;
     data: Product;
@@ -235,10 +261,27 @@ export class ProductService {
     if (!product) {
       throw new NotFoundException('Sản phẩm không tồn tại');
     }
+    // Lấy sản phẩm yêu thích khi có id người dùng
+    const favoriteProduct = userId
+      ? await this.favoriteProductRepository
+          .createQueryBuilder('fp')
+          .leftJoin('fp.product', 'product')
+          .where('fp.user_id = :userId', { userId })
+          .select('product.id', 'product')
+          .getRawMany()
+      : [];
+    const favoriteProductIds = new Set(
+      favoriteProduct.map((item) => item.product),
+    );
+    const results = {
+      ...product,
+      isFavorite: favoriteProductIds.has(product.id),
+    };
+
     return {
       success: true,
       message: 'Lấy thông tin sản phẩm thành công',
-      data: product,
+      data: results,
       breadCrumb,
     };
   }

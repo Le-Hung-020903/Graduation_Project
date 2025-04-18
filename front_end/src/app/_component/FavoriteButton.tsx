@@ -4,18 +4,45 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import React, { useState } from "react"
 import Box from "@mui/material/Box"
+import {
+  createFavoriteProduct,
+  deleteFavoriteProduct
+} from "../api/apiwithclient"
+import { toast } from "react-toastify"
 
-const FavoriteButton = () => {
-  const [isFavorite, setIsFavorite] = useState<boolean>(false)
+const FavoriteButton = ({
+  isFavorite,
+  productId
+}: {
+  isFavorite: boolean
+  productId: number
+}) => {
+  const [FavoriteProduct, setFavoriteProduct] = useState<boolean>(isFavorite)
 
-  const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite)
+  const handleSubmitFavorite = (event: React.MouseEvent) => {
+    event.stopPropagation() // Ngăn sự kiện lan đến thẻ cha (Link)
+    event.preventDefault() // Ngăn Link tự động chuyển trang
+
+    const newValue = !FavoriteProduct
+    setFavoriteProduct(newValue)
+    if (newValue) {
+      toast.promise(createFavoriteProduct(productId), {}).then((res) => {
+        if (res.success) toast.success(`${res.message}`)
+      })
+    } else {
+      toast.promise(deleteFavoriteProduct(productId), {}).then((res) => {
+        if (res.success) toast.success(`${res.message}`)
+      })
+    }
   }
 
   return (
-    <Box className="favorite-button" onClick={handleToggleFavorite}>
+    <Box
+      className="interceptor-loading favorite-button"
+      onClick={handleSubmitFavorite}
+    >
       <Stack
-        direction={"row"}
+        direction="row"
         sx={{
           width: "36px",
           height: "36px",
@@ -26,20 +53,20 @@ const FavoriteButton = () => {
           cursor: "pointer"
         }}
       >
-        {!isFavorite ? (
-          <FavoriteBorderIcon
-            sx={{
-              fontSize: "15px",
-              lineHeight: "36px",
-              color: "primary.main"
-            }}
-          />
-        ) : (
+        {FavoriteProduct ? (
           <FavoriteIcon
             sx={{
               fontSize: "15px",
               lineHeight: "36px",
               color: "red"
+            }}
+          />
+        ) : (
+          <FavoriteBorderIcon
+            sx={{
+              fontSize: "15px",
+              lineHeight: "36px",
+              color: "primary.main"
             }}
           />
         )}

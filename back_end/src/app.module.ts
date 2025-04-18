@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -47,6 +47,8 @@ import { Action } from './modules/action/entities/action.entity';
 import { ModulesModule } from './modules/modules.module';
 import { Address } from './user/address/entities/address.entity';
 import { CommentModule } from './product/comment/comment.module';
+import { FavoriteProductModule } from './product/favorite_product/favorite_product.module';
+import { AuthenticationMiddleware } from './authentication/authentication.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -109,6 +111,7 @@ import { CommentModule } from './product/comment/comment.module';
     PostModule,
     ModulesModule,
     CommentModule,
+    FavoriteProductModule,
   ],
   controllers: [AppController],
   providers: [
@@ -123,4 +126,13 @@ import { CommentModule } from './product/comment/comment.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthenticationMiddleware)
+      .forRoutes(
+        { path: 'product', method: RequestMethod.GET },
+        { path: 'product/{*splat}', method: RequestMethod.GET },
+      );
+  }
+}

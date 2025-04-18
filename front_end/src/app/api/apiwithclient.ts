@@ -67,6 +67,23 @@ export const getProductsAPI = async (page: number, limit: number) => {
   return res.data
 }
 
+// FAVORITE PRODUCT
+export const getFavoriteProducts = async () => {
+  const res = await authorizedAxiosInstance.get(`/favorite-product`)
+  return res.data
+}
+export const createFavoriteProduct = async (productId: number) => {
+  const res = await authorizedAxiosInstance.post(`/favorite-product/create`, {
+    product_id: productId
+  })
+  return res.data
+}
+export const deleteFavoriteProduct = async (productId: number) => {
+  const res = await authorizedAxiosInstance.delete(
+    `/favorite-product/${productId}`
+  )
+  return res.data
+}
 // REVIEWS
 export const createReviewAPI = async (data: IFormDataReview) => {
   const res = await authorizedAxiosInstance.post(`/comment/create`, data)

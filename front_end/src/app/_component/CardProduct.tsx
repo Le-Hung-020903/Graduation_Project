@@ -203,7 +203,10 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
                 transition: "0.3s ease"
               }}
             >
-              <FavoriteButton />
+              <FavoriteButton
+                isFavorite={product.isFavorite}
+                productId={product.id}
+              />
             </Box>
           </Stack>
         </Card>
