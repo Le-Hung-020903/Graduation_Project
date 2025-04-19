@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { Repository } from 'typeorm';
@@ -18,6 +19,7 @@ import { UserToken } from './entities/user_token.entity';
 import { LogoutData } from './interface/logout.interface';
 import { GoogleUserDto } from 'src/user/dto/google-user.dto';
 import { GoogleUser } from './interface/userGoogle.interface';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -182,6 +184,56 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+  async changePassword(
+    body: ChangePasswordDto,
+    userId: number,
+  ): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    // B1: Tìm người dùng
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Không tìm thấy người dùng');
+    }
+
+    // B2: So sánh mật khẩu hiện tại
+    const isCurrentPasswordValid = Hash.verify(
+      body.currentPassword,
+      user.password,
+    );
+    if (!isCurrentPasswordValid) {
+      throw new BadRequestException('Mật khẩu hiện tại không đúng');
+    }
+
+    const isSameAsOldPassword = Hash.verify(body.newPassword, user.password);
+    if (isSameAsOldPassword) {
+      throw new BadRequestException(
+        'Mật khẩu mới không được trùng với mật khẩu hiện tại',
+      );
+    }
+
+    // B3: So sánh mật khẩu mới và xác nhận mật khẩu
+    if (body.newPassword !== body.confirmPassword) {
+      throw new BadRequestException(
+        'Mật khẩu mới phải giống xác nhận mật khẩu',
+      );
+    }
+
+    // B4: Hash mật khẩu mới & cập nhật
+    const hashedNewPassword = Hash.make(body.newPassword);
+    user.password = hashedNewPassword;
+    await this.userRepository.save(user);
+    return {
+      success: true,
+      message: 'Đổi mật khẩu thành công',
     };
   }
 }

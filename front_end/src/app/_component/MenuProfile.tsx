@@ -1,4 +1,6 @@
+"use client"
 import React from "react"
+import { usePathname } from "next/navigation"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
@@ -10,13 +12,61 @@ import PhoneForwardedIcon from "@mui/icons-material/PhoneForwarded"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import RateReviewIcon from "@mui/icons-material/RateReview"
 import Box from "@mui/material/Box"
-const active = {
+import Link from "next/link"
+
+const activeStyle = {
   borderRadius: "8px",
   border: "1px solid #016433",
   backgroundColor: "#BAFFDD",
   color: "#016433"
 }
+
 const MenuProfile = () => {
+  const pathname = usePathname()
+
+  // Kiểm tra đường dẫn hiện tại để xác định mục nào đang active
+  const isActive = (path: string) => {
+    // Nếu là trang root ("/") hoặc bắt đầu với "/smember"
+    if (path === "/smember") {
+      return pathname === "/" || pathname.endsWith("/smember")
+    }
+    return pathname.endsWith(path)
+  }
+
+  // Danh sách các mục menu
+  const menuItems = [
+    {
+      path: "/member",
+      icon: <HomeIcon />,
+      text: "Trang chủ"
+    },
+    {
+      path: "/history",
+      icon: <HistoryIcon />,
+      text: "Lịch sử mua hàng"
+    },
+    {
+      path: "/member/account",
+      icon: <PersonIcon />,
+      text: "Tài khoản của bạn"
+    },
+    {
+      path: "/support",
+      icon: <PhoneForwardedIcon />,
+      text: "Hỗ trợ"
+    },
+    {
+      path: "/feedback",
+      icon: <RateReviewIcon />,
+      text: "Góp ý - Phản hồi"
+    },
+    {
+      path: "/logout",
+      icon: <ExitToAppIcon />,
+      text: "Thoát tài khoản"
+    }
+  ]
+
   return (
     <Box
       sx={{
@@ -29,50 +79,29 @@ const MenuProfile = () => {
       <List
         sx={{
           "& .MuiListItem-root": {
-            cursor: "pointer"
+            whiteSpace: "nowrap",
+            cursor: "pointer",
+            marginBottom: "4px"
           }
         }}
       >
-        <ListItem
-          sx={{
-            ...active
-          }}
-        >
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Trang chủ" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <HistoryIcon />
-          </ListItemIcon>
-          <ListItemText primary="Lịch sử mua hàng" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <PersonIcon />
-          </ListItemIcon>
-          <ListItemText primary="Tài khoản của bạn" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <PhoneForwardedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Hỗ trợ" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <RateReviewIcon />
-          </ListItemIcon>
-          <ListItemText primary="Góp ý - Phản hồi" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <ExitToAppIcon />
-          </ListItemIcon>
-          <ListItemText primary="Thoát tài khoản" />
-        </ListItem>
+        {menuItems.map((item) => (
+          <ListItem key={item.path} sx={isActive(item.path) ? activeStyle : {}}>
+            <Link
+              href={item.path}
+              style={{
+                display: "flex",
+                width: "100%",
+                textDecoration: "none",
+                color: "inherit",
+                alignItems: "center"
+              }}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </Link>
+          </ListItem>
+        ))}
       </List>
     </Box>
   )

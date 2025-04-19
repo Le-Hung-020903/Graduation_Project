@@ -5,8 +5,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite"
 import React, { useState } from "react"
 import Box from "@mui/material/Box"
 import {
-  createFavoriteProduct,
-  deleteFavoriteProduct
+  createFavoriteProductAPI,
+  deleteFavoriteProductAPI
 } from "../api/apiwithclient"
 import { toast } from "react-toastify"
 
@@ -26,11 +26,11 @@ const FavoriteButton = ({
     const newValue = !FavoriteProduct
     setFavoriteProduct(newValue)
     if (newValue) {
-      toast.promise(createFavoriteProduct(productId), {}).then((res) => {
+      toast.promise(createFavoriteProductAPI(productId), {}).then((res) => {
         if (res.success) toast.success(`${res.message}`)
       })
     } else {
-      toast.promise(deleteFavoriteProduct(productId), {}).then((res) => {
+      toast.promise(deleteFavoriteProductAPI(productId), {}).then((res) => {
         if (res.success) toast.success(`${res.message}`)
       })
     }

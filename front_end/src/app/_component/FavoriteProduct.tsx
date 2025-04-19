@@ -1,18 +1,17 @@
 "use client"
 import Grid from "@mui/material/Grid"
 import React, { useEffect, useState } from "react"
-import { getFavoriteProducts } from "../api/apiwithclient"
+import { getFavoriteProductsAPI } from "../api/apiwithclient"
 import { IProductListItem } from "../_interfaces/product"
 import CardProduct from "./CardProduct"
 import Box from "@mui/material/Box"
 
 const FavoriteProduct = () => {
   const [listProduct, setListProduct] = useState<IProductListItem[]>([])
-  console.log("🚀 ~ FavoriteProduct ~ listProduct:", listProduct)
 
   useEffect(() => {
     const fetchFavoriteProductList = async () => {
-      const res = await getFavoriteProducts()
+      const res = await getFavoriteProductsAPI()
       const favoriteProducts = res.data.map((item: IProductListItem) => ({
         ...item,
         isFavorite: true

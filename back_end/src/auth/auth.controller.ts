@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   NotFoundException,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -14,7 +15,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { LogoutData } from './interface/logout.interface';
 import { GoogleAuthGuard } from 'src/guards/google-auth/google-auth.guard';
 import { Public } from 'src/Decorator/auth.decorator';
-import JWT from 'src/utils/jwt';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -130,5 +131,11 @@ export class AuthController {
     // và nhớ cho status bằng true khi login với google
     // Gửi email chúc mừng tài khoản đã đăng ký
     // Còn nếu email thì dùng verify tài khoản với JWT
+  }
+
+  @Patch('change-password')
+  changePassword(@Body() body: ChangePasswordDto, @Req() req) {
+    const user = req?.user?.id;
+    return this.authService.changePassword(body, +user);
   }
 }

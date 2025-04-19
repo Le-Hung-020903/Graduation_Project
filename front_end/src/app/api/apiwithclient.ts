@@ -8,6 +8,14 @@ export const registerUserAPI = async (data: IUser) => {
   const res = await authorizedAxiosInstance.post(`/user/create`, data)
   return res.data
 }
+export const changePasswordUserAPI = async (data: {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}) => {
+  const res = await authorizedAxiosInstance.patch(`/auth/change-password`, data)
+  return res.data
+}
 
 // DISCOUNT
 export const getDiscountAPI = async () => {
@@ -68,17 +76,17 @@ export const getProductsAPI = async (page: number, limit: number) => {
 }
 
 // FAVORITE PRODUCT
-export const getFavoriteProducts = async () => {
+export const getFavoriteProductsAPI = async () => {
   const res = await authorizedAxiosInstance.get(`/favorite-product`)
   return res.data
 }
-export const createFavoriteProduct = async (productId: number) => {
+export const createFavoriteProductAPI = async (productId: number) => {
   const res = await authorizedAxiosInstance.post(`/favorite-product/create`, {
     product_id: productId
   })
   return res.data
 }
-export const deleteFavoriteProduct = async (productId: number) => {
+export const deleteFavoriteProductAPI = async (productId: number) => {
   const res = await authorizedAxiosInstance.delete(
     `/favorite-product/${productId}`
   )
