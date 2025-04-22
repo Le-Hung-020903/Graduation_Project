@@ -18,17 +18,48 @@ import PhoneIcon from "@mui/icons-material/Phone"
 import PersonIcon from "@mui/icons-material/Person"
 import NotListedLocationIcon from "@mui/icons-material/NotListedLocation"
 import { formattedAmount } from "../utils/formatMoney"
+import { setOrderItem } from "@/redux/slice/orderSlice"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "@/redux/store"
+import { ICartProduct } from "../_interfaces/cart"
 
 type OrderDetailProps = {
   orderDetail: orderDetailResponse["data"]
 }
 
 const OrderDetail = ({ orderDetail }: OrderDetailProps) => {
+  const dispatch = useDispatch<AppDispatch>()
+
   const router = useRouter()
   const handleGoBack = () => {
     router.back() // Quay lại trang trước đó
   }
 
+  const data = orderDetail.orderDetails.map((item) => ({
+    id: item.id,
+    quantity: item.quantity,
+    price: item.variant.price,
+    product: {
+      id: item.product.id,
+      name: item.product.name
+    },
+    variant: {
+      id: item.variant.id,
+      name: item.variant.name
+    },
+    variantSelected: {
+      id: item.variant.id,
+      name: item.variant.name
+    },
+    images: item.product.images[0]
+  }))
+
+  const handleReOrder = (order: ICartProduct[]) => {
+    if (data.length > 0) {
+      dispatch(setOrderItem(order))
+      router.push("/checkout")
+    }
+  }
   return (
     <Box>
       <Stack direction={"row"} spacing={2} alignItems={"center"} sx={{ mb: 3 }}>
@@ -204,6 +235,7 @@ const OrderDetail = ({ orderDetail }: OrderDetailProps) => {
             my: 5,
             width: "100%"
           }}
+          onClick={() => handleReOrder(data)}
         >
           Mua lại
         </Button>

@@ -31,14 +31,6 @@ export class OrderService {
       payment_method,
       final_price,
     }: CreateOrderDto = createOrderDto;
-    const exitsOrder = await this.orderRepository.findOne({
-      where: {
-        user: { id: userId },
-        status: 'PENDING',
-      },
-    });
-    if (!exitsOrder) {
-    }
     // Tạo order_code ngay từ đầu (có thể dùng timestamp hoặc uuid)
     const tempOrderCode = `TEMP-${Date.now()}`;
 
@@ -209,10 +201,13 @@ export class OrderService {
         'order.discount_id',
         'orderDetail.id',
         'orderDetail.quantity',
+        'product.id',
         'product.name',
         'image.id',
         'image.url',
+        'variant.id',
         'variant.name',
+        'variant.price',
         'address.name',
         'address.phone',
         'address.province',

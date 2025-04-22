@@ -99,6 +99,7 @@ const Order = () => {
   const [note, setNote] = useState<string>("")
 
   const orderDetails = useSelector(selectOrderItems)
+  console.log("orderDetails", orderDetails)
 
   const handleSubmitOrder = () => {
     const items = orderDetails.map((item) => {

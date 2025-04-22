@@ -4,7 +4,6 @@ import { UpdateOrderDetailDto } from './dto/update-order_detail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderDetail } from './entities/order_detail.entity';
 import { In, Repository } from 'typeorm';
-import { log } from 'util';
 
 @Injectable()
 export class OrderDetailService {

@@ -24,6 +24,7 @@ interface OrderDetail {
 }
 
 interface Product {
+  id: number
   name: string
   images: Image[]
 }
@@ -34,7 +35,9 @@ interface Image {
 }
 
 interface Variant {
+  id: number
   name: string
+  price: number
 }
 
 interface User {

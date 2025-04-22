@@ -95,6 +95,7 @@ const Cart = () => {
 
   // Lưu sản phẩm được chọn vào redux để tạo đơn hàng
   const orderDetails = cart.items.filter((item) => checkedItem[item.id])
+  console.log("orderDetails", orderDetails)
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({})
   const [totalPrice, setTotalPrice] = useState<number>(0)
 
