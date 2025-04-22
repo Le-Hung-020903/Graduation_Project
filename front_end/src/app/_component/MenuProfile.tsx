@@ -41,7 +41,7 @@ const MenuProfile = () => {
       text: "Trang chủ"
     },
     {
-      path: "/history",
+      path: "/member/history",
       icon: <HistoryIcon />,
       text: "Lịch sử mua hàng"
     },

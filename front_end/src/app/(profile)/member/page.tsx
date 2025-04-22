@@ -3,8 +3,8 @@ import Box from "@mui/material/Box"
 import Image from "next/image"
 import React from "react"
 import Typography from "@mui/material/Typography"
-import Divider from "@mui/material/Divider"
 import FavoriteProduct from "@/app/_component/FavoriteProduct"
+import TotalOrder from "@/app/_component/TotalOrder"
 
 const PageMember = () => {
   return (
@@ -54,45 +54,9 @@ const PageMember = () => {
           </Typography>
         </Box>
       </Stack>
-      <Stack
-        direction={"row"}
-        sx={{
-          width: "450px",
-          border: "1px solid #ddd",
-          borderRadius: "6px",
-          p: 4,
-          mt: 6
-        }}
-      >
-        <Stack sx={{ flex: 1, textAlign: "center" }}>
-          <Typography
-            sx={{
-              fontSize: "40px",
-              fontWeight: "bold"
-            }}
-          >
-            7
-          </Typography>
-          <Typography>đơn hàng</Typography>
-        </Stack>
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{
-            borderColor: "black"
-          }}
-        />
-        <Stack sx={{ flex: 1, textAlign: "center" }}>
-          <Typography
-            sx={{
-              fontSize: "40px",
-              fontWeight: "bold"
-            }}
-          >
-            4M
-          </Typography>
-        </Stack>
-      </Stack>
+      <Box sx={{ width: "50%" }}>
+        <TotalOrder />
+      </Box>
       <Box
         sx={{
           mt: 6

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -124,12 +125,111 @@ export class OrderService {
       : { exits: false };
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async findAll(userId: number, status: string) {
+    if (!userId) {
+      throw new UnauthorizedException('Bạn cần phải đăng nhập');
+    }
+
+    const query = this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoin('order.orderDetails', 'orderDetail')
+      .leftJoin('orderDetail.product', 'product')
+      .leftJoin('product.images', 'image')
+      .leftJoin('orderDetail.variant', 'variant')
+      .where('order.user_id = :userId', { userId })
+      .orderBy('order.created_at', 'DESC')
+      .select([
+        'order.id',
+        'order.status',
+        'order.final_price',
+        'order.created_at',
+        'orderDetail.id',
+        'product.name',
+        'image.id',
+        'image.url',
+        'variant.name',
+      ]);
+
+    if (status && status !== 'All') {
+      query.andWhere('order.status = :status', { status });
+    }
+    const orders = await query.getMany();
+
+    const result = orders.map((order) => {
+      const firstDetail = order.orderDetails?.[0];
+      const moreProducts = order.orderDetails.length - 1;
+      return {
+        id: order.id,
+        status: order.status,
+        final_price: order.final_price,
+        created_at: order.created_at,
+        product: {
+          name: firstDetail?.product?.name,
+          images: {
+            url: firstDetail?.product?.images?.[0]?.url,
+          },
+          variant: {
+            name: firstDetail?.variant?.name,
+          },
+        },
+        more: moreProducts > 0 ? `+${moreProducts} sản phẩm khác` : null,
+      };
+    });
+    return {
+      success: true,
+      message: 'Lấy danh sách đơn hàng thành công',
+      data: result,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(
+    id: number,
+    userId: number,
+  ): Promise<{ success: boolean; message: string; data: Order }> {
+    if (!userId) {
+      throw new UnauthorizedException('Bạn cần phải đăng nhập');
+    }
+
+    const order = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.orderDetails', 'orderDetail')
+      .leftJoinAndSelect('order.address', 'address')
+      .leftJoinAndSelect('orderDetail.product', 'product')
+      .leftJoinAndSelect('product.images', 'image')
+      .leftJoinAndSelect('orderDetail.variant', 'variant')
+      .where('order.id = :id', { id }) // lọc theo order id
+      .andWhere('order.user_id = :userId', { userId }) // đảm bảo là đơn của user đó
+      .select([
+        'order.id',
+        'order.status',
+        'order.total_price',
+        'order.final_price',
+        'order.created_at',
+        'order.order_code',
+        'order.discount_id',
+        'orderDetail.id',
+        'orderDetail.quantity',
+        'product.name',
+        'image.id',
+        'image.url',
+        'variant.name',
+        'address.name',
+        'address.phone',
+        'address.province',
+        'address.district',
+        'address.ward',
+        'address.street',
+      ])
+      .getOne();
+
+    if (!order) {
+      throw new NotFoundException('Không tìm thấy đơn hàng');
+    }
+    return {
+      success: true,
+      message: 'Lấy thông tin đơn hàng thành công',
+      data: order,
+    };
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto, userId: number) {

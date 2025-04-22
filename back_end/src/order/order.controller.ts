@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   UnauthorizedException,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -26,10 +27,10 @@ export class OrderController {
     return this.orderService.create(createOrderDto, userId);
   }
 
-  @Public()
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  findAll(@Query('status') status = 'All', @Req() req) {
+    const userId: number = req.user?.id;
+    return this.orderService.findAll(userId, status);
   }
 
   @Get('check_status/:order_code')
@@ -45,8 +46,9 @@ export class OrderController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req) {
+    const userId: number = req.user?.id;
+    return this.orderService.findOne(+id, userId);
   }
 
   @Patch(':id')

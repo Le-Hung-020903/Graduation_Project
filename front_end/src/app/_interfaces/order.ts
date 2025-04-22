@@ -15,3 +15,22 @@ export interface IOrder {
     price: number
   }[]
 }
+
+export interface IOrderResponse {
+  id: number
+  status: string
+  final_price: number
+  created_at: string // hoặc có thể dùng Date nếu bạn parse thành Date object
+  product: Product
+  more: string
+}
+
+interface Product {
+  name: string
+  images: {
+    url: string
+  }
+  variant: {
+    name: string
+  }
+}

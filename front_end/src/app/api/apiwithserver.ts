@@ -1,5 +1,7 @@
 import { ICategory } from "../_interfaces/category"
 import { IManufacturer } from "../_interfaces/manufacturer"
+import { IOrderResponse } from "../_interfaces/order"
+import { orderDetailResponse } from "../_interfaces/orderDetail"
 import { IProduct } from "../_interfaces/product"
 import { API_ROOT } from "../utils/constants"
 
@@ -75,4 +77,46 @@ export const getManufacturersAPI = async (): Promise<{
 }> => {
   const response = await fetch(`${API_ROOT}/manufacturer/getAll`)
   return response.json()
+}
+
+//ORDER
+export const getOrderUserAPI = async (
+  status: "All" | "PENDING" | "CONFIRMED",
+  accessToken: string
+): Promise<{
+  success: boolean
+  message: string
+  data: IOrderResponse[]
+}> => {
+  const headers: Record<string, string> = {}
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`
+  }
+  const res = await fetch(
+    status === "All"
+      ? `${API_ROOT}/order`
+      : `${API_ROOT}/order?status=${status}`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers
+    }
+  )
+  return res.json()
+}
+
+export const getOrderDetailAPI = async (
+  id: number,
+  accessToken: string
+): Promise<orderDetailResponse> => {
+  const headers: Record<string, string> = {}
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`
+  }
+  const res = await fetch(`${API_ROOT}/order/${id}`, {
+    method: "GET",
+    credentials: "include",
+    headers
+  })
+  return res.json()
 }
