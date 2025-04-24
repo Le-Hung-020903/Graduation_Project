@@ -41,6 +41,7 @@ export class OrderService {
       payment_method,
       final_price,
       order_code: tempOrderCode,
+      status: payment_method === 'COD' ? 'WAITING_CONFIRMATION' : 'PENDING',
       user: { id: userId },
       address: { id: address_id },
       discount: discount_id ? { id: discount_id } : undefined,
@@ -77,8 +78,8 @@ export class OrderService {
     };
   }
 
-  async checkPaymentStatus(order_code, userId: number) {
-    if (!/^DH\d+$/.test(order_code)) {
+  async checkPaymentStatus(order_code: CheckOrderStatusDto, userId: number) {
+    if (!/^DH\d+$/.test(order_code.order_code)) {
       throw new BadRequestException(
         'Mã đơn hàng không hợp lệ. Phải có định dạng DH + số ID',
       );
@@ -87,7 +88,7 @@ export class OrderService {
     const exitsOrder = await this.orderRepository.findOne({
       where: {
         user: { id: userId },
-        order_code: order_code,
+        order_code: order_code.order_code,
       },
     });
     if (!exitsOrder) {

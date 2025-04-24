@@ -94,12 +94,13 @@ const Order = () => {
   const [discountAmount, setDiscountAmount] = useState<number>(0) // Lưu số tiền giảm
   const [finalPrice, setFinalPrice] = useState<number>(0) // Lưu tổng tiền sau giảm giá
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null)
-  const [paymentMethod, setPaymentMethod] = useState<string>("COD") // "cod" hoặc "vnpay"
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.COD
+  )
   const [deliveryMethod, setDeliveryMethod] = useState<string>("home")
   const [note, setNote] = useState<string>("")
 
   const orderDetails = useSelector(selectOrderItems)
-  console.log("orderDetails", orderDetails)
 
   const handleSubmitOrder = () => {
     const items = orderDetails.map((item) => {
@@ -138,9 +139,7 @@ const Order = () => {
               )
               setLoading(true)
               const redirectUrl =
-                paymentMethod === "COD"
-                  ? "/"
-                  : `/checkout/${res.data.order_code}`
+                paymentMethod === PaymentMethod.COD ? "/thankyou" : `/checkout`
               router.push(redirectUrl)
             }
           })
@@ -155,7 +154,7 @@ const Order = () => {
           )
           setLoading(true)
           const redirectUrl =
-            paymentMethod === "COD" ? "/" : `/checkout/${res.data.order_code}`
+            paymentMethod === PaymentMethod.COD ? "/thankyou" : `/checkout`
           router.push(redirectUrl)
         })
       }

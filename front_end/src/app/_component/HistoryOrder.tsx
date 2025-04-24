@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper"
 import { formattedAmount } from "../utils/formatMoney"
 import dayjs from "dayjs"
 
-type OrderStatus = "All" | "PENDING" | "CONFIRMED"
+type OrderStatus = "All" | "PENDING" | "CONFIRMED" | "WAITING_CONFIRMATION"
 
 interface ordersProps {
   order: IOrderResponse[]
@@ -23,7 +23,8 @@ const HistoryOrder = ({ order }: ordersProps) => {
 
   const statusButtons: { status: OrderStatus; label: string }[] = [
     { status: "All", label: "Tất cả" },
-    { status: "PENDING", label: "Chờ xác nhận" },
+    { status: "PENDING", label: "Chưa thanh toán" },
+    { status: "WAITING_CONFIRMATION", label: "Chờ xác nhận (COD)" },
     { status: "CONFIRMED", label: "Thành công" }
   ]
 

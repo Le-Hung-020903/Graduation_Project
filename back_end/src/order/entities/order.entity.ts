@@ -28,7 +28,14 @@ export class Order {
 
   @Column({
     type: 'enum',
-    enum: ['PENDING', 'SHIPPED', 'DELIVERED', 'CANCELED', 'CONFIRMED'],
+    enum: [
+      'PENDING',
+      'WAITING_CONFIRMATION',
+      'SHIPPED',
+      'DELIVERED',
+      'CANCELED',
+      'CONFIRMED',
+    ],
     default: 'PENDING',
   })
   status: string;
@@ -77,7 +84,7 @@ export class Order {
   @JoinColumn({ name: 'discount_id' })
   discount: Discount;
 
-  @OneToOne(() => Address, (address) => address.order, {
+  @ManyToOne(() => Address, {
     nullable: true,
     onDelete: 'SET NULL',
   })

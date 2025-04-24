@@ -51,7 +51,4 @@ export class Address {
   @ManyToOne(() => User, (user) => user.addresses, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @OneToOne(() => Order, (order) => order.address)
-  order: Order;
 }

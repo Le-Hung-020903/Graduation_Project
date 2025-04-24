@@ -20,6 +20,7 @@ import Link from "next/link"
 import { checkStatusOrderAPI } from "../api/apiwithclient"
 import { useSelector } from "react-redux"
 import { selectOrder } from "@/redux/slice/orderSlice"
+import Thankyou from "./Thankyou"
 
 const QrCode = () => {
   const { totalPrice, orderCode } = useSelector(selectOrder)
@@ -33,38 +34,38 @@ const QrCode = () => {
     accountNumber: "0392115894",
     bankName: "Ngân hàng MBBank",
     codeBank: "MB",
-    paymentStatus: "UNPAID",
+    paymentStatus: "PAID",
     template: "compact",
     image: `https://qr.sepay.vn/assets/img/banklogo/MB.png`
   })
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
-    const checkPaymentStatus = async (order_code: string) => {
-      const { data } = await checkStatusOrderAPI(order_code)
-      if (data.payment_status === "PAID") {
-        setQrCode((pre) => {
-          return {
-            ...pre,
-            paymentStatus: "PAID"
-          }
-        })
-        if (timerRef.current) {
-          clearInterval(timerRef.current)
-          timerRef.current = null // Xóa giá trị sau khi dừng interval
-        }
-      }
-    }
-    timerRef.current = setInterval(() => {
-      checkPaymentStatus(orderCode)
-    }, 1000)
+  // useEffect(() => {
+  //   const checkPaymentStatus = async (order_code: string) => {
+  //     const { data } = await checkStatusOrderAPI(order_code)
+  //     if (data.payment_status === "PAID") {
+  //       setQrCode((pre) => {
+  //         return {
+  //           ...pre,
+  //           paymentStatus: "PAID"
+  //         }
+  //       })
+  //       if (timerRef.current) {
+  //         clearInterval(timerRef.current)
+  //         timerRef.current = null // Xóa giá trị sau khi dừng interval
+  //       }
+  //     }
+  //   }
+  //   timerRef.current = setInterval(() => {
+  //     checkPaymentStatus(orderCode)
+  //   }, 1000)
 
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      } // ✅ Cleanup interval khi rời khỏi trang
-    }
-  }, [orderCode])
+  //   return () => {
+  //     if (timerRef.current) {
+  //       clearInterval(timerRef.current)
+  //     } // ✅ Cleanup interval khi rời khỏi trang
+  //   }
+  // }, [orderCode])
   return (
     <Container
       maxWidth="lg"
@@ -73,7 +74,7 @@ const QrCode = () => {
       }}
     >
       {qrCode.paymentStatus === "PAID" ? (
-        <Typography>Thanh toán thành công</Typography>
+        <Thankyou />
       ) : (
         <Box>
           <Box textAlign="center" my={4}>

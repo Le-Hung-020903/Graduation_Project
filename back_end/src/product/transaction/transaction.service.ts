@@ -52,6 +52,7 @@ export class TransactionService {
 
     await this.orderRepository.update(order.id, {
       payment_status: 'PAID',
+      status: 'CONFIRMED',
     });
     return {
       success: true,
