@@ -29,6 +29,11 @@ export class AddressController {
     const userId: number = req.user?.id;
     return this.addressService.findAll(userId);
   }
+  @Get('/get_all')
+  getAllAddress(@Req() req) {
+    const userId: number = req.user?.id;
+    return this.addressService.getAllAddress(userId);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

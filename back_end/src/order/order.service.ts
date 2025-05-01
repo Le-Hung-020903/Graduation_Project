@@ -11,6 +11,7 @@ import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { OrderDetailService } from './order_detail/order_detail.service';
 import { CheckOrderStatusDto } from './order_detail/dto/check-order-status.dto';
+import { UpdateStatusOrder } from './dto/update-status-order';
 
 @Injectable()
 export class OrderService {
@@ -186,6 +187,7 @@ export class OrderService {
     const order = await this.orderRepository
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.orderDetails', 'orderDetail')
+      .leftJoinAndSelect('order.user', 'user')
       .leftJoinAndSelect('order.address', 'address')
       .leftJoinAndSelect('orderDetail.product', 'product')
       .leftJoinAndSelect('product.images', 'image')
@@ -195,8 +197,10 @@ export class OrderService {
       .select([
         'order.id',
         'order.status',
+        'order.note',
         'order.total_price',
         'order.final_price',
+        'order.payment_method',
         'order.created_at',
         'order.order_code',
         'order.discount_id',
@@ -204,6 +208,7 @@ export class OrderService {
         'orderDetail.quantity',
         'product.id',
         'product.name',
+        'user.email',
         'image.id',
         'image.url',
         'variant.id',
@@ -214,6 +219,7 @@ export class OrderService {
         'address.province',
         'address.district',
         'address.ward',
+        'address.is_default',
         'address.street',
       ])
       .getOne();
@@ -281,7 +287,148 @@ export class OrderService {
   remove(id: number) {
     return `This action removes a #${id} order`;
   }
-  async getAllOrder() {
-    // const orders = await this.orderRepository.
+
+  async getAllOrder(
+    userId: number,
+    page: number,
+    limit: number,
+    sort: 'ASC' | 'DESC' = 'DESC',
+    status?: string,
+  ) {
+    if (!userId) {
+      throw new UnauthorizedException('Bạn cần phải đăng nhập');
+    }
+    const skip = (page - 1) * limit;
+    const query = this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoin('order.orderDetails', 'orderDetail')
+      .leftJoin('orderDetail.product', 'product')
+      .leftJoin('product.images', 'image')
+      .leftJoin('order.address', 'address')
+      .leftJoin('orderDetail.variant', 'variant')
+      .orderBy('order.created_at', sort)
+      .skip(skip)
+      .take(limit)
+      .select([
+        'order.id',
+        'order.status',
+        'order.payment_method',
+        'order.order_code',
+        'order.final_price',
+        'order.created_at',
+        'orderDetail.id',
+        'address.name',
+        'product.name',
+        'image.id',
+        'image.url',
+        'variant.name',
+      ]);
+
+    if (status && status !== 'All') {
+      query.where('order.status = :status', { status });
+    }
+
+    const [orders, total] = await query.getManyAndCount();
+
+    const result = orders.map((order) => {
+      const firstDetail = order.orderDetails?.[0];
+      const moreProducts = order.orderDetails.length - 1;
+      return {
+        id: order.id,
+        status: order.status,
+        order_code: order.order_code,
+        payment_method: order.payment_method,
+        final_price: order.final_price,
+        name: order?.address?.name,
+        product: {
+          name: firstDetail?.product?.name,
+          images: {
+            url: firstDetail?.product?.images?.[0]?.url,
+          },
+          variant: {
+            name: firstDetail?.variant?.name,
+          },
+        },
+        more: moreProducts > 0 ? `+${moreProducts} sản phẩm khác` : null,
+      };
+    });
+
+    return {
+      success: true,
+      message: 'Lấy danh sách đơn hàng thành công',
+      data: result,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async updateStatus(
+    Body: UpdateStatusOrder,
+    orderId: number,
+    userId: number,
+  ): Promise<{ success: boolean; message: string; data: Order }> {
+    if (!userId) throw new UnauthorizedException('Vui lòng đăng nhập');
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+    });
+    if (!order) throw new NotFoundException('Đơn hàng không tồn tại');
+
+    await this.orderRepository.update(orderId, {
+      note: Body.note,
+      status: Body.status,
+      address: { id: Body.address_id },
+    });
+
+    const newOrder = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.orderDetails', 'orderDetail')
+      .leftJoinAndSelect('order.user', 'user')
+      .leftJoinAndSelect('order.address', 'address')
+      .leftJoinAndSelect('orderDetail.product', 'product')
+      .leftJoinAndSelect('product.images', 'image')
+      .leftJoinAndSelect('orderDetail.variant', 'variant')
+      .where('order.id = :orderId', { orderId }) // lọc theo order id
+      .andWhere('order.user_id = :userId', { userId }) // đảm bảo là đơn của user đó
+      .select([
+        'order.id',
+        'order.status',
+        'order.note',
+        'order.total_price',
+        'order.final_price',
+        'order.payment_method',
+        'order.created_at',
+        'order.order_code',
+        'order.discount_id',
+        'orderDetail.id',
+        'orderDetail.quantity',
+        'product.id',
+        'product.name',
+        'user.email',
+        'image.id',
+        'image.url',
+        'variant.id',
+        'variant.name',
+        'variant.price',
+        'address.name',
+        'address.phone',
+        'address.province',
+        'address.district',
+        'address.ward',
+        'address.is_default',
+        'address.street',
+      ])
+      .getOne();
+    if (!newOrder)
+      throw new NotFoundException('Không tìm thấy đơn hàng sau khi cập nhật');
+
+    return {
+      success: true,
+      message: 'Cập nhật đơn hàng thành công',
+      data: newOrder,
+    };
   }
 }

@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,13 +22,32 @@ export class AddressService {
     success: boolean;
     message: string;
   }> {
+    const normalized = {
+      phone: createAddressDto.phone.trim(),
+      name: createAddressDto.name.trim().toLowerCase(),
+      province: createAddressDto.province.trim().toLowerCase(),
+      district: createAddressDto.district.trim().toLowerCase(),
+      ward: createAddressDto.ward.trim().toLowerCase(),
+      street: createAddressDto.street.trim().toLowerCase(),
+    };
+
+    const existing = await this.addressRepository.findOne({
+      where: {
+        phone: normalized.phone,
+        name: normalized.name,
+        province: normalized.province,
+        district: normalized.district,
+        ward: normalized.ward,
+        street: normalized.street,
+        user: { id: userId },
+      },
+    });
+
+    if (existing) {
+      throw new ConflictException('Địa chỉ đã tồn tại');
+    }
     const address = await this.addressRepository.create({
-      phone: createAddressDto.phone,
-      name: createAddressDto.name,
-      province: createAddressDto.province,
-      district: createAddressDto.district,
-      ward: createAddressDto.ward,
-      street: createAddressDto.street,
+      ...normalized,
       is_default: createAddressDto.is_default ?? false,
       user: { id: userId },
     });
@@ -93,6 +117,21 @@ export class AddressService {
     return {
       success: true,
       message: 'Địa chỉ đã được xoá thành công',
+    };
+  }
+  async getAllAddress(userId: number) {
+    if (!userId) {
+      throw new UnauthorizedException('Bạn cần phải đăng nhập');
+    }
+    const address = await this.addressRepository.find({
+      where: {
+        user: { id: userId },
+      },
+    });
+    return {
+      success: true,
+      message: 'Lấy danh sách địa chỉ thành công',
+      data: address,
     };
   }
 }

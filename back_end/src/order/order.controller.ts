@@ -16,6 +16,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Public } from 'src/Decorator/auth.decorator';
 import { CheckOrderStatusDto } from './order_detail/dto/check-order-status.dto';
+import { UpdateStatusOrder } from './dto/update-status-order';
 
 @Controller('order')
 export class OrderController {
@@ -48,6 +49,32 @@ export class OrderController {
     return this.orderService.checkExitsOrder(userId);
   }
 
+  @Get('get_all')
+  getAllOrder(
+    @Req() req,
+    @Query()
+    query: { _page: string; _limit: string; _sort: string; _status: string },
+  ) {
+    const { _page = 1, _limit = 5, _sort = '', _status = '' } = query;
+    const userId: number = req.user?.id;
+    return this.orderService.getAllOrder(
+      userId,
+      Number(_page),
+      Number(_limit),
+      _sort.toUpperCase() as 'ASC' | 'DESC',
+      _status,
+    );
+  }
+
+  @Patch('update_status/:id')
+  updateStatus(
+    @Body() Body: UpdateStatusOrder,
+    @Param('id') id: string,
+    @Req() req,
+  ) {
+    const userId: number = req.user?.id;
+    return this.orderService.updateStatus(Body, +id, userId);
+  }
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     const userId: number = req.user?.id;
@@ -67,14 +94,5 @@ export class OrderController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
-  }
-
-  @Get('get_all')
-  getAllOrder(@Req() req) {
-    const userId: number = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedException('Bạn cần phải đăng nhập');
-    }
-    return this.orderService.getAllOrder();
   }
 }
