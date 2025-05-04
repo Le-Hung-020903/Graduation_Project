@@ -17,6 +17,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Public } from 'src/Decorator/auth.decorator';
 import { CheckOrderStatusDto } from './order_detail/dto/check-order-status.dto';
 import { UpdateStatusOrder } from './dto/update-status-order';
+import { CreateOrderByAdmin } from './dto/create-order-admin.dto';
 
 @Controller('order')
 export class OrderController {
@@ -26,6 +27,15 @@ export class OrderController {
   create(@Body() createOrderDto: CreateOrderDto, @Req() req) {
     const userId: number = req.user?.id;
     return this.orderService.create(createOrderDto, userId);
+  }
+
+  @Post('create_order_by_admin')
+  createOrderByAdmin(
+    @Body() createOrderByAdminDto: CreateOrderByAdmin,
+    @Req() req,
+  ) {
+    const userId: number = req.user?.id;
+    return this.orderService.createOrderByAdmin(createOrderByAdminDto, userId);
   }
 
   @Get()

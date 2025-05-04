@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { OrderDetailService } from './order_detail/order_detail.service';
 import { CheckOrderStatusDto } from './order_detail/dto/check-order-status.dto';
 import { UpdateStatusOrder } from './dto/update-status-order';
+import { CreateOrderByAdmin } from './dto/create-order-admin.dto';
 
 @Injectable()
 export class OrderService {
@@ -46,6 +47,68 @@ export class OrderService {
       user: { id: userId },
       address: { id: address_id },
       discount: discount_id ? { id: discount_id } : undefined,
+    });
+
+    const savedOrder = await this.orderRepository.save(order);
+
+    // Gán order_id cho từng order_detail trước khi gửi đi
+    const orderDeatailsWithOrderId = order_details.map((item) => ({
+      ...item,
+      order_id: savedOrder.id,
+    }));
+
+    // Gửi danh sách order_details với order_id đã được gán
+    const orderDetail = await this.orderDetailService.create(
+      orderDeatailsWithOrderId,
+    );
+
+    const orderCode = `DH${savedOrder.id}`;
+
+    // Lưu tổng giá vào order
+    await this.orderRepository.update(savedOrder.id, {
+      order_code: orderCode,
+      total_price: orderDetail.total_price,
+    });
+
+    const newOrder = await this.orderRepository.findOne({
+      where: { id: savedOrder.id },
+    });
+    return {
+      success: true,
+      message: 'Tạo đơn hàng thành công',
+      data: newOrder!,
+    };
+  }
+
+  async createOrderByAdmin(
+    createOrderByAdminDto: CreateOrderByAdmin,
+    userId: number,
+  ) {
+    const {
+      note,
+      order_details,
+      address_id,
+      discount_id,
+      payment_method,
+      final_price,
+      status,
+      payment_status,
+    }: CreateOrderByAdmin = createOrderByAdminDto;
+    // Tạo order_code ngay từ đầu (có thể dùng timestamp hoặc uuid)
+    const tempOrderCode = `TEMP-${Date.now()}`;
+
+    // Tạo đơn hàng
+    const order = this.orderRepository.create({
+      total_price: 0,
+      note,
+      payment_method,
+      final_price,
+      order_code: tempOrderCode,
+      status: status,
+      user: { id: userId },
+      address: { id: address_id },
+      discount: discount_id ? { id: discount_id } : undefined,
+      payment_status: payment_status,
     });
 
     const savedOrder = await this.orderRepository.save(order);
