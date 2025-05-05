@@ -1,10 +1,20 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateOrderDto } from './create-order.dto';
-import { IsArray, IsEnum, IsNotEmpty, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateOrderDetailDto } from '../order_detail/dto/create-order_detail.dto';
 
 export class CreateOrderByAdmin extends PartialType(CreateOrderDto) {
+  @IsNotEmpty()
+  @IsNumber()
+  user_id: number;
+
   @IsNotEmpty()
   @IsEnum(
     [

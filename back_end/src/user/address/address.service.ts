@@ -63,6 +63,7 @@ export class AddressService {
     message: string;
     data: Address[];
   }> {
+    if (!id) throw new UnauthorizedException('Cần đăng nhập để lấy địa chỉ');
     const exitsAddress = await this.addressRepository.find({
       where: {
         user: { id },

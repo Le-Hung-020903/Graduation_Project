@@ -48,6 +48,21 @@ export class UserService {
     };
   }
 
+  async getAllNameUser(): Promise<{
+    success: boolean;
+    message: string;
+    data: { id: number; name: string }[];
+  }> {
+    const users = await this.userRepository.find({
+      select: ['id', 'name'],
+    });
+    return {
+      success: true,
+      message: 'Lây danh sách người dùng thành công',
+      data: users,
+    };
+  }
+
   async findAll(
     page: number,
     limit: number,

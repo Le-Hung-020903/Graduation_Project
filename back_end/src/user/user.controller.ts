@@ -75,6 +75,11 @@ export class UserController {
       filter,
     );
   }
+  @Public()
+  @Get('get_name')
+  getAllNameUser() {
+    return this.userService.getAllNameUser();
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

@@ -55,7 +55,6 @@ export class User {
 
   @ManyToMany(() => Role, (role) => role.users, {
     cascade: true,
-    eager: true,
     onDelete: 'CASCADE', // Xóa user thì xóa luôn trong user_role
   })
   @JoinTable({

@@ -29,13 +29,10 @@ export class OrderController {
     return this.orderService.create(createOrderDto, userId);
   }
 
+  @Public()
   @Post('create_order_by_admin')
-  createOrderByAdmin(
-    @Body() createOrderByAdminDto: CreateOrderByAdmin,
-    @Req() req,
-  ) {
-    const userId: number = req.user?.id;
-    return this.orderService.createOrderByAdmin(createOrderByAdminDto, userId);
+  createOrderByAdmin(@Body() createOrderByAdminDto: CreateOrderByAdmin) {
+    return this.orderService.createOrderByAdmin(createOrderByAdminDto);
   }
 
   @Get()
@@ -84,6 +81,12 @@ export class OrderController {
   ) {
     const userId: number = req.user?.id;
     return this.orderService.updateStatus(Body, +id, userId);
+  }
+
+  @Public()
+  @Get('get_order_by_admin/:id')
+  findOneByAdmin(@Param('id') id: string) {
+    return this.orderService.findOneByAdmin(+id);
   }
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {

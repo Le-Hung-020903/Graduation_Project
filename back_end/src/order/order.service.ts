@@ -80,10 +80,7 @@ export class OrderService {
     };
   }
 
-  async createOrderByAdmin(
-    createOrderByAdminDto: CreateOrderByAdmin,
-    userId: number,
-  ) {
+  async createOrderByAdmin(createOrderByAdminDto: CreateOrderByAdmin) {
     const {
       note,
       order_details,
@@ -92,6 +89,7 @@ export class OrderService {
       payment_method,
       final_price,
       status,
+      user_id,
       payment_status,
     }: CreateOrderByAdmin = createOrderByAdminDto;
     // Tạo order_code ngay từ đầu (có thể dùng timestamp hoặc uuid)
@@ -105,7 +103,7 @@ export class OrderService {
       final_price,
       order_code: tempOrderCode,
       status: status,
-      user: { id: userId },
+      user: { id: user_id },
       address: { id: address_id },
       discount: discount_id ? { id: discount_id } : undefined,
       payment_status: payment_status,
@@ -492,6 +490,60 @@ export class OrderService {
       success: true,
       message: 'Cập nhật đơn hàng thành công',
       data: newOrder,
+    };
+  }
+
+  async findOneByAdmin(id: number): Promise<{
+    success: boolean;
+    message: string;
+    data: Order;
+  }> {
+    const order = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.orderDetails', 'orderDetail')
+      .leftJoinAndSelect('order.user', 'user')
+      .leftJoinAndSelect('order.address', 'address')
+      .leftJoinAndSelect('orderDetail.product', 'product')
+      .leftJoinAndSelect('product.images', 'image')
+      .leftJoinAndSelect('orderDetail.variant', 'variant')
+      .where('order.id = :id', { id }) // lọc theo order id
+      .select([
+        'order.id',
+        'order.status',
+        'order.note',
+        'order.total_price',
+        'order.final_price',
+        'order.payment_method',
+        'order.created_at',
+        'order.order_code',
+        'order.discount_id',
+        'orderDetail.id',
+        'orderDetail.quantity',
+        'product.id',
+        'product.name',
+        'user.email',
+        'image.id',
+        'image.url',
+        'variant.id',
+        'variant.name',
+        'variant.price',
+        'address.name',
+        'address.phone',
+        'address.province',
+        'address.district',
+        'address.ward',
+        'address.is_default',
+        'address.street',
+      ])
+      .getOne();
+
+    if (!order) {
+      throw new NotFoundException('Không tìm thấy đơn hàng');
+    }
+    return {
+      success: true,
+      message: 'Lấy thông tin đơn hàng thành công',
+      data: order,
     };
   }
 }
