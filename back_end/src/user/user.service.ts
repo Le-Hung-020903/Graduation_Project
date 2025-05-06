@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -183,6 +184,29 @@ export class UserService {
     return {
       success: true,
       message: 'Thêm vai trò cho người dùng thành công',
+    };
+  }
+
+  async getPermissionByUser(
+    userId: number,
+  ): Promise<{ success: boolean; message: string; data: string[] }> {
+    if (!userId)
+      throw new UnauthorizedException('Bạn cần đăng nhập để kiểm tra quyền');
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'roles')
+      .leftJoinAndSelect('roles.permissions', 'permissions')
+      .where('user.id = :userId', { userId })
+      .select(['user.id', 'roles.name', 'permissions.value'])
+      .getOne();
+    const allPermissions = user?.roles.flatMap((item) =>
+      item.permissions.map((p) => p.value),
+    );
+    const uniquePermissions = [...new Set(allPermissions)];
+    return {
+      success: true,
+      message: 'Lấy danh sách quyền thành công',
+      data: uniquePermissions,
     };
   }
 }

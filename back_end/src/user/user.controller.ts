@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ILike } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Public } from 'src/Decorator/auth.decorator';
+import { log } from 'console';
 
 @Controller('user')
 export class UserController {
@@ -79,6 +81,12 @@ export class UserController {
   @Get('get_name')
   getAllNameUser() {
     return this.userService.getAllNameUser();
+  }
+
+  @Get('permissions')
+  getPermissionByUser(@Req() req) {
+    const userId: number = req.user?.id;
+    return this.userService.getPermissionByUser(userId);
   }
 
   @Get(':id')
