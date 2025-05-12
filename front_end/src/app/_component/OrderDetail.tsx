@@ -15,6 +15,7 @@ import Image from "next/image"
 import PaymentIcon from "@mui/icons-material/Payment"
 import Divider from "@mui/material/Divider"
 import PhoneIcon from "@mui/icons-material/Phone"
+import NotesIcon from "@mui/icons-material/Notes"
 import PersonIcon from "@mui/icons-material/Person"
 import NotListedLocationIcon from "@mui/icons-material/NotListedLocation"
 import { formattedAmount } from "../utils/formatMoney"
@@ -222,6 +223,12 @@ const OrderDetail = ({ orderDetail }: OrderDetailProps) => {
             <PhoneIcon />
             <Typography>{orderDetail.address.phone}</Typography>
           </Stack>
+          {orderDetail.note && (
+            <Stack direction={"row"} spacing={1} alignItems={"center"} mt={1}>
+              <NotesIcon />
+              <Typography>{orderDetail.note}</Typography>
+            </Stack>
+          )}
           <Stack direction={"row"} spacing={1} alignItems={"center"} mt={1}>
             <HomeIcon />
             <Typography>{`${orderDetail.address.street} - ${orderDetail.address.ward} - ${orderDetail.address.district} - ${orderDetail.address.province}`}</Typography>

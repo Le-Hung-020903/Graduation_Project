@@ -6,6 +6,8 @@ import Badge from "@mui/material/Badge"
 import Image from "next/image"
 import AutoCompleteSearch from "./AutoCompleteSearch"
 import Typography from "@mui/material/Typography"
+import NotificationsIcon from "@mui/icons-material/Notifications"
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import Link from "next/link"
 import { useSelector, useDispatch } from "react-redux"
 import { selectCurrentUser } from "@/redux/slice/userSlice"
@@ -66,12 +68,13 @@ const Header = () => {
                 }
               }}
             >
-              <Image
+              {/* <Image
                 src="/images/Icon/truck.png"
                 width={20}
                 height={20}
                 alt="Tra cứu đơn hàng"
-              />
+              /> */}
+              <NotificationsIcon sx={{ color: "primary.main" }} />
             </Box>
             <Typography
               component="span"
@@ -80,7 +83,7 @@ const Header = () => {
                 color: "#757577"
               }}
             >
-              Tra cứu đơn hàng
+              Thông báo
             </Typography>
           </Box>
 
@@ -100,12 +103,13 @@ const Header = () => {
                     }
                   }}
                 >
-                  <Image
+                  {/* <Image
                     src="/images/Icon/shopping-cart.png"
                     width={20}
                     height={20}
                     alt="Giỏ hàng"
-                  />
+                  /> */}
+                  <ShoppingCartIcon sx={{ color: "primary.main" }} />
                 </Box>
               </Badge>
 

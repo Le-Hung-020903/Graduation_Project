@@ -95,7 +95,6 @@ const Cart = () => {
 
   // Lưu sản phẩm được chọn vào redux để tạo đơn hàng
   const orderDetails = cart.items.filter((item) => checkedItem[item.id])
-  console.log("orderDetails", orderDetails)
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({})
   const [totalPrice, setTotalPrice] = useState<number>(0)
 
@@ -167,7 +166,12 @@ const Cart = () => {
     })
   }
 
-  const optimizeCloudinaryImage = (url: string, width = 200, height = 200) => {
+  const optimizeCloudinaryImage = (
+    url: string | undefined | null,
+    width = 200,
+    height = 200
+  ) => {
+    if (!url) return "/fallback.jpg"
     if (url.includes("res.cloudinary.com")) {
       return url.replace(
         "/upload/",

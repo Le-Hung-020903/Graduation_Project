@@ -312,7 +312,9 @@ async function PageDetail({ params }: PageProps) {
               >
                 <Typography variant="h6">Mô tả sản phẩm</Typography>
               </AccordionSummary>
-              <AccordionDetails>{product.desc}</AccordionDetails>
+              <AccordionDetails
+                dangerouslySetInnerHTML={{ __html: product.desc_html }}
+              ></AccordionDetails>
             </Accordion>
             <Accordion>
               <AccordionSummary

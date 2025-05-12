@@ -6,6 +6,7 @@ export interface orderDetailResponse {
 
 interface OrderData {
   id: number
+  note?: string
   total_price: number
   final_price: number
   status: string // Hoặc union type cụ thể nếu biết các trạng thái có thể có, ví dụ: 'CONFIRMED' | 'PENDING' | ...

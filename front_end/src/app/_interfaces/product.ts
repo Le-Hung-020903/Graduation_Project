@@ -2,7 +2,7 @@ export interface IProduct {
   id: number
   name: string
   slug: string
-  desc: string
+  desc_html: string
   created_at: string // Hoặc Date nếu bạn parse sang kiểu Date trong frontend
   images: IProductImage[]
   category: ICategory

@@ -88,6 +88,7 @@ const Order = () => {
   const [openDiscount, setOpenDiscount] = useState<boolean>(false)
   const [openAddress, setOpenAddress] = useState<boolean>(false)
   const [address, setAddress] = useState<IAddress>(initialFormData)
+  console.log("🚀 ~ Order ~ address:", address)
   const [listAdrress, setListAdrress] = useState<IAddress[]>([])
   const [vouchers, setVouchers] = useState<IDiscount[]>([])
   const [selectedVoucher, setSelectedVoucher] = useState<number | null>(null)
@@ -139,7 +140,9 @@ const Order = () => {
               )
               setLoading(true)
               const redirectUrl =
-                paymentMethod === PaymentMethod.COD ? "/thankyou" : `/checkout`
+                paymentMethod === PaymentMethod.COD
+                  ? "/thankyou"
+                  : `/checkout/${res.data.order_code}`
               router.push(redirectUrl)
             }
           })
@@ -154,7 +157,9 @@ const Order = () => {
           )
           setLoading(true)
           const redirectUrl =
-            paymentMethod === PaymentMethod.COD ? "/thankyou" : `/checkout`
+            paymentMethod === PaymentMethod.COD
+              ? "/thankyou"
+              : `/checkout/${res.data.order_code}`
           router.push(redirectUrl)
         })
       }
