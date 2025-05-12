@@ -72,13 +72,14 @@ export class UserService {
     filter: object,
   ) {
     const skip = (page - 1) * limit;
-    const sortField = sort.toLowerCase();
-    const orderField = order.toLowerCase();
+    const sortField = sort?.toLowerCase();
+    const orderField = order?.toUpperCase();
 
     const [user, total] = await this.userRepository.findAndCount({
       select: ['id', 'name', 'email', 'status', 'phone', 'created_at'],
       take: limit,
       skip,
+      relations: ['roles'],
       where: filter,
       order: {
         [sortField ? sortField : 'id']: orderField ? orderField : 'desc',

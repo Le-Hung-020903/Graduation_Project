@@ -140,17 +140,11 @@ export class OrderService {
     };
   }
 
-  async checkPaymentStatus(order_code: CheckOrderStatusDto, userId: number) {
-    if (!/^DH\d+$/.test(order_code.order_code)) {
-      throw new BadRequestException(
-        'Mã đơn hàng không hợp lệ. Phải có định dạng DH + số ID',
-      );
-    }
-
+  async checkPaymentStatus(order_code: string, userId: number) {
     const exitsOrder = await this.orderRepository.findOne({
       where: {
         user: { id: userId },
-        order_code: order_code.order_code,
+        order_code: order_code,
       },
     });
     if (!exitsOrder) {

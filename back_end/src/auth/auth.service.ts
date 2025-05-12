@@ -5,7 +5,6 @@ import {
   NotFoundException,
   UnauthorizedException,
   InternalServerErrorException,
-  ConflictException,
   BadRequestException,
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';

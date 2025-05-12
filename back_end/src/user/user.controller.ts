@@ -15,7 +15,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ILike } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Public } from 'src/Decorator/auth.decorator';
-import { log } from 'console';
 
 @Controller('user')
 export class UserController {

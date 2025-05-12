@@ -43,11 +43,13 @@ export class OrderController {
 
   @Get('check_status/:order_code')
   checkPaymentStatus(
-    @Param('order_code') order_code: CheckOrderStatusDto,
+    //  Nếu dùng dto thì bên trong params k có gì
+    @Param() params: CheckOrderStatusDto,
     @Req() req,
   ) {
     const userId: number = req.user?.id;
-    return this.orderService.checkPaymentStatus(order_code, userId);
+    const orderCode: string = params.order_code;
+    return this.orderService.checkPaymentStatus(orderCode, userId);
   }
 
   @Get('check_exits_order')

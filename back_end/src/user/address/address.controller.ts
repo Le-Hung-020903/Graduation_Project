@@ -23,7 +23,6 @@ export class AddressController {
     return this.addressService.create(createAddressDto, userId);
   }
 
-  @Public()
   @Get()
   findAll(@Req() req) {
     const userId: number = req.user?.id;

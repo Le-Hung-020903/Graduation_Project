@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Repository } from 'typeorm';
@@ -23,13 +27,25 @@ export class TransactionService {
     } else if (createTransactionDto.transferType === 'out') {
       amount_out = createTransactionDto.transferAmount;
     }
+
+    const regex = /DH(\d+)/;
+    const match = createTransactionDto.content.match(regex);
+    const orderId = match ? Number(match[1]) : null;
+
+    if (orderId === null) {
+      throw new BadRequestException(
+        'Không tìm thấy mã đơn hàng trong nội dung giao dịch',
+      );
+    }
+
     const order = await this.orderRepository.findOne({
       where: {
-        order_code: createTransactionDto.content,
+        id: orderId,
         final_price: createTransactionDto.transferAmount,
         payment_status: 'UNPAID',
       },
     });
+
     if (!order) {
       throw new NotFoundException('Không tìm thấy đơn hàng');
     }
