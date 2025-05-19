@@ -27,5 +27,5 @@ export interface IAddress {
   district: string
   ward: string
   street: string
-  is_default: boolean
+  is_default?: boolean
 }

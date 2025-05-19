@@ -33,6 +33,11 @@ export const getAddressAPI = async () => {
   return res.data
 }
 
+export const getListAddressAPI = async () => {
+  const res = await authorizedAxiosInstance.get("/address/get_all")
+  return res.data
+}
+
 // ORDER
 export const createOrderAPI = async (data: IOrder) => {
   const res = await authorizedAxiosInstance.post(`/order/create`, data)

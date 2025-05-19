@@ -1,11 +1,5 @@
 "use client"
-import React, {
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useMemo,
-  useState
-} from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Grid from "@mui/material/Grid2"
 import Box from "@mui/material/Box"
 import Stack from "@mui/material/Stack"
@@ -16,18 +10,9 @@ import Button from "@mui/material/Button"
 import Divider from "@mui/material/Divider"
 import Radio from "@mui/material/Radio"
 import Drawer from "@mui/material/Drawer"
-import Modal from "@mui/material/Modal"
 import TextField from "@mui/material/TextField"
-import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import Select, { SelectChangeEvent } from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
 import IconButton from "@mui/material/IconButton"
-import FormControl from "@mui/material/FormControl"
-import InputLabel from "@mui/material/InputLabel"
-import Fade from "@mui/material/Fade"
-import Backdrop from "@mui/material/Backdrop"
-import ControlPointIcon from "@mui/icons-material/ControlPoint"
 import { useDispatch, useSelector } from "react-redux"
 import { formattedAmount } from "../utils/formatMoney"
 import Image from "next/image"
@@ -36,13 +21,7 @@ import { ICartProduct } from "../_interfaces/cart"
 import CloseIcon from "@mui/icons-material/Close"
 import LinearProgress from "@mui/material/LinearProgress"
 import {
-  Edit as EditIcon,
-  Add as AddIcon,
-  ArrowBack as ArrowBackIcon
-} from "@mui/icons-material"
-import {
   checkExistOrderAPI,
-  createAddressAPI,
   createOrderAPI,
   getAddressAPI,
   getDiscountAPI,
@@ -52,49 +31,27 @@ import { IDiscount } from "../_interfaces/discount"
 import { formatDate } from "../utils/formatDate"
 import { IAddress } from "../_interfaces/user"
 import { toast } from "react-toastify"
-import { List, ListItem } from "@mui/material"
 import { useRouter } from "next/navigation"
 import { PaymentMethod } from "../_interfaces/order"
 import { AppDispatch } from "@/redux/store"
 import { selectOrderItems, setOrder } from "@/redux/slice/orderSlice"
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "8px"
-}
-
-const initialFormData = {
-  name: "",
-  phone: "",
-  province: "",
-  district: "",
-  ward: "",
-  street: "",
-  is_default: false
-}
+import Address from "./Address"
 
 const Order = () => {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState<boolean>(false)
-  const [open, setOpen] = useState<boolean>(false)
   const [openDiscount, setOpenDiscount] = useState<boolean>(false)
-  const [openAddress, setOpenAddress] = useState<boolean>(false)
-  const [address, setAddress] = useState<IAddress>(initialFormData)
-  console.log("🚀 ~ Order ~ address:", address)
+  // Đóng mở model địa chỉ
+  const [open, setOpen] = useState<boolean>(false)
+  // Lấy địa chỉ được chọn
+  const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null)
+  // Danh sách truyền sang
   const [listAdrress, setListAdrress] = useState<IAddress[]>([])
   const [vouchers, setVouchers] = useState<IDiscount[]>([])
   const [selectedVoucher, setSelectedVoucher] = useState<number | null>(null)
   const [discountAmount, setDiscountAmount] = useState<number>(0) // Lưu số tiền giảm
   const [finalPrice, setFinalPrice] = useState<number>(0) // Lưu tổng tiền sau giảm giá
-  const [selectedAddress, setSelectedAddress] = useState<number | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     PaymentMethod.COD
   )
@@ -115,7 +72,7 @@ const Order = () => {
 
     const data = {
       discount_id: selectedVoucher ? selectedVoucher : null,
-      address_id: address.id ? address.id : 0,
+      address_id: selectedAddress ? selectedAddress.id! : 0,
       note: note,
       final_price: finalPrice,
       payment_method: paymentMethod as PaymentMethod,
@@ -170,28 +127,9 @@ const Order = () => {
     setOpenDiscount(state)
   }
 
-  const handleCloseAndOpenModal = () => {
-    handleOpenAdress(false)
-    setOpen(true)
-  }
-
-  const handleOpenAdress = (state: boolean) => {
-    setOpenAddress(state)
-  }
-
+  // Đóng mở model địa chỉ
   const handleOpen = (): void => {
     setOpen(!open)
-  }
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
-  ) => {
-    const { name, value, type } = e.target as HTMLInputElement
-    setAddress({
-      ...address,
-      [name!]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value
-    })
   }
 
   // Tính tổng giá ban đầu
@@ -221,21 +159,6 @@ const Order = () => {
     toggleDrawer(false)
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    toast
-      .promise(createAddressAPI(address), {
-        pending: "Đang lưu địa chỉ..."
-      })
-      .then((res) => {
-        if (res.success) {
-          toast.success("lưu địa chỉ thành công")
-          setAddress(initialFormData)
-        }
-      })
-    handleOpen()
-  }
-
   // Cập nhật giá trị `finalPrice` mỗi khi `totalPrice` thay đổi
   useEffect(() => {
     setFinalPrice(totalPrice)
@@ -258,22 +181,7 @@ const Order = () => {
 
     const fecthAdress = async () => {
       const { data } = await getAddressAPI()
-      setListAdrress(
-        data.map((item: IAddress) => {
-          return {
-            id: item.id,
-            name: item.name,
-            phone: item.phone,
-            province: item.province,
-            district: item.district,
-            ward: item.ward,
-            street: item.street,
-            is_default: item.is_default
-          }
-        })
-      )
-      const isDefault = data.find((i: IAddress) => i.is_default)
-      setAddress(isDefault)
+      setListAdrress(data)
     }
 
     fetchDiscountAPI()
@@ -492,168 +400,12 @@ const Order = () => {
               </Box>
             </RadioGroup>
 
-            <Modal
-              aria-labelledby="address-modal-title"
-              aria-describedby="address-modal-description"
-              open={openAddress}
-              onClose={() => handleOpenAdress(false)}
-              closeAfterTransition
-              slots={{ backdrop: Backdrop }}
-              slotProps={{
-                backdrop: {
-                  timeout: 500
-                }
-              }}
-            >
-              <Fade in={openAddress}>
-                <Box
-                  sx={{
-                    ...style,
-                    width: "600px"
-                  }}
-                >
-                  <Typography
-                    id="address-modal-title"
-                    variant="h6"
-                    component="h2"
-                    gutterBottom
-                  >
-                    Địa chỉ giao hàng
-                  </Typography>
-
-                  <List sx={{ mb: 2 }}>
-                    {listAdrress.map((address, index) => (
-                      <Box key={address.id}>
-                        {index > 0 && <Divider sx={{ my: 1 }} />}
-                        <ListItem
-                          sx={{
-                            alignItems: "flex-start",
-                            p: 0,
-                            "&:hover": {
-                              backgroundColor: "action.hover"
-                            }
-                          }}
-                          onClick={() =>
-                            setSelectedAddress(address.id ? address.id : 0)
-                          }
-                        >
-                          <Stack
-                            direction={"row"}
-                            alignItems={"flex-start"}
-                            spacing={2}
-                            sx={{
-                              width: "100%"
-                            }}
-                          >
-                            <Radio
-                              checked={selectedAddress === address.id}
-                              onChange={() =>
-                                setSelectedAddress(address.id ? address.id : 0)
-                              }
-                              value={address.id}
-                              name="address-radio"
-                              inputProps={{
-                                "aria-label": `Chọn địa chỉ ${address.name}`
-                              }}
-                              sx={{ ml: 1 }}
-                            />
-
-                            <Box sx={{ flex: 1 }}>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  width: "100%",
-                                  alignItems: "center",
-                                  p: "8px 0"
-                                }}
-                              >
-                                <Typography fontWeight="medium">
-                                  {address.name} | {address.phone}
-                                </Typography>
-
-                                <IconButton
-                                  edge="end"
-                                  aria-label="edit"
-                                  size="small"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    // handleEditAddress(address)
-                                  }}
-                                  sx={{ ml: "auto" }}
-                                >
-                                  <EditIcon color="primary" fontSize="small" />
-                                </IconButton>
-                              </Box>
-
-                              <Box
-                                sx={{
-                                  pr: 2,
-                                  py: 1,
-                                  width: "100%"
-                                }}
-                              >
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {`${address.street} - ${address.ward} - ${address.district} - ${address.province}`}
-                                </Typography>
-                              </Box>
-                            </Box>
-                          </Stack>
-                        </ListItem>
-
-                        {/* {address.id
-                          ? address.id
-                          : 0 < addresses.length - 1 && (
-                              <Divider sx={{ my: 1 }} />
-                            )} */}
-                      </Box>
-                    ))}
-                  </List>
-
-                  {/* Các nút hành động */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mt: 7
-                    }}
-                  >
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={handleCloseAndOpenModal}
-                      sx={{ textTransform: "none" }}
-                    >
-                      Thêm địa chỉ
-                    </Button>
-                    <Box>
-                      <Button
-                        variant="text"
-                        startIcon={<ArrowBackIcon />}
-                        sx={{ mr: 1, textTransform: "none" }}
-                        onClick={() => handleOpenAdress(false)}
-                      >
-                        Quay lại
-                      </Button>
-                      <Button
-                        variant="contained"
-                        sx={{ textTransform: "none" }}
-                        onClick={() => {
-                          // Lưu địa chỉ đã chọn
-                          // handleSaveSelectedAddress(selectedAddress)
-                          handleOpenAdress(false)
-                        }}
-                        disabled={!selectedAddress}
-                      >
-                        Áp dụng
-                      </Button>
-                    </Box>
-                  </Box>
-                </Box>
-              </Fade>
-            </Modal>
+            <Address
+              open={open}
+              setOpen={setOpen}
+              listAdrress={listAdrress}
+              setSelectedAddress={setSelectedAddress}
+            />
 
             <Box
               sx={{
@@ -671,188 +423,41 @@ const Order = () => {
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   Thông tin vận chuyển
                 </Typography>
-                {address ? (
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => handleOpenAdress(true)}
-                    sx={{
-                      ml: "auto"
-                    }}
-                  >
-                    Thay đổi
-                  </Button>
-                ) : null}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleOpen}
+                  sx={{
+                    ml: "auto"
+                  }}
+                >
+                  {selectedAddress ? "Thay đổi" : "Thêm mới"}
+                </Button>
               </Stack>
 
-              {address ? (
+              {selectedAddress ? (
                 <Box
                   sx={{
                     mt: 4
                   }}
                 >
                   <Typography sx={{ mt: 1, textTransform: "capitalize" }}>
-                    {`${address.name} | ${address.phone}`}
+                    {`${selectedAddress.name} | ${selectedAddress.phone}`}
                   </Typography>
                   <Typography sx={{ textTransform: "capitalize" }}>
-                    {`${address.street} - ${address.ward} - ${address.district} -
-                    ${address.province}`}
+                    {`${selectedAddress.street} - ${selectedAddress.ward} - ${selectedAddress.district} -
+                    ${selectedAddress.province}`}
                   </Typography>
                 </Box>
-              ) : null}
-
-              <Stack
-                onClick={handleOpen}
-                direction={"row"}
-                sx={{
-                  mt: 4,
-                  cursor: "pointer",
-                  color: "primary.main"
-                }}
-              >
-                <ControlPointIcon
-                  style={{ fill: "#128447" }}
+              ) : (
+                <Typography
                   sx={{
-                    mr: 1.5
+                    mt: 3
                   }}
-                />
-                <Typography>Cập nhật địa chỉ giao hàng</Typography>
-              </Stack>
-
-              {open ? (
-                <Modal
-                  open={open}
-                  onClose={handleOpen}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
                 >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h6"
-                      component="h2"
-                    >
-                      Cập nhật địa chỉ giao hàng
-                    </Typography>
-                    <form onSubmit={handleSubmit}>
-                      <TextField
-                        fullWidth
-                        label="Họ và tên"
-                        name="name"
-                        value={address.name}
-                        onChange={handleChange}
-                        margin="normal"
-                      />
-                      <TextField
-                        fullWidth
-                        label="Số điện thoại"
-                        name="phone"
-                        value={address.phone}
-                        onChange={handleChange}
-                        margin="normal"
-                      />
-                      <FormControl
-                        fullWidth
-                        sx={{
-                          my: 2
-                        }}
-                      >
-                        <InputLabel id="select-province">
-                          Tỉnh / Thành phố
-                        </InputLabel>
-                        <Select
-                          fullWidth
-                          labelId="select-province"
-                          id="select-province"
-                          label="Tỉnh / Thành phố"
-                          name="province"
-                          value={address.province}
-                          onChange={handleChange}
-                          // margin="normal"
-                        >
-                          <MenuItem value="Hà Nội">Hà Nội</MenuItem>
-                          <MenuItem value="Hồ Chí Minh">Hồ Chí Minh</MenuItem>
-                          {/* Thêm các thành phố khác tại đây */}
-                        </Select>
-                      </FormControl>
-                      <FormControl
-                        fullWidth
-                        sx={{
-                          mb: 2
-                        }}
-                      >
-                        <InputLabel id="select-district">
-                          Quận / Huyện
-                        </InputLabel>
-                        <Select
-                          fullWidth
-                          labelId="select-district"
-                          id="select-district"
-                          label="Quận/Huyện"
-                          name="district"
-                          value={address.district}
-                          onChange={handleChange}
-                          // margin="normal"
-                        >
-                          <MenuItem value="Quận 1">Quận 1</MenuItem>
-                          <MenuItem value="Quận 2">Quận 2</MenuItem>
-                          {/* Thêm các quận/huyện khác tại đây */}
-                        </Select>
-                      </FormControl>
-                      <FormControl fullWidth>
-                        <InputLabel id="select-district">
-                          Phường / Xã
-                        </InputLabel>
-                        <Select
-                          fullWidth
-                          labelId="select-ward"
-                          id="select-ward"
-                          label="Phường/Xã"
-                          name="ward"
-                          value={address.ward}
-                          onChange={handleChange}
-                          // margin="normal"
-                        >
-                          <MenuItem value="Phường 1">Phường 1</MenuItem>
-                          <MenuItem value="Phường 2">Phường 2</MenuItem>
-                          {/* Thêm các phường/xã khác tại đây */}
-                        </Select>
-                      </FormControl>
-                      <TextField
-                        fullWidth
-                        label="Số nhà, tên đường"
-                        name="street"
-                        value={address.street}
-                        onChange={handleChange}
-                        margin="normal"
-                      />
-                      <Stack
-                        direction={"row"}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              name="is_default"
-                              checked={address.is_default}
-                              onChange={handleChange}
-                            />
-                          }
-                          label="Đặt làm địa chỉ mặc định"
-                        />
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          sx={{ mt: 2 }}
-                        >
-                          Lưu lại
-                        </Button>
-                      </Stack>
-                    </form>
-                  </Box>
-                </Modal>
-              ) : null}
+                  Hãy chọn địa chỉ để giao tới
+                </Typography>
+              )}
             </Box>
           </Box>
 
@@ -883,7 +488,7 @@ const Order = () => {
             >
               {/* Box cho COD */}
               <Box
-                onClick={() => setPaymentMethod("COD")} // Bấm vào box sẽ chọn "cod"
+                onClick={() => setPaymentMethod(PaymentMethod.COD)} // Bấm vào box sẽ chọn "cod"
                 sx={{
                   borderRadius: "8px",
                   border: "1px solid #ccc",
@@ -893,7 +498,7 @@ const Order = () => {
                   alignItems: "center",
                   cursor: "pointer", // Hiển thị con trỏ khi hover
                   backgroundColor:
-                    paymentMethod === "cod"
+                    paymentMethod === "COD"
                       ? "rgba(76, 175, 80, 0.1)"
                       : "transparent" // Màu nền khi được chọn
                 }}
@@ -922,7 +527,7 @@ const Order = () => {
 
               {/* Box cho Ví VNPay */}
               <Box
-                onClick={() => setPaymentMethod("QR_PAYMENT")} // Bấm vào box sẽ chọn "vnpay"
+                onClick={() => setPaymentMethod(PaymentMethod.QR_PAYMENT)} // Bấm vào box sẽ chọn "vnpay"
                 sx={{
                   borderRadius: "8px",
                   border: "1px solid #ccc",
