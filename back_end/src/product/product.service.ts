@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import Slug from 'src/utils/slug';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ProductImageService } from './product_image/product_image.service';
@@ -430,6 +430,96 @@ export class ProductService {
       success: true,
       message: 'Lấy biến thể thành công',
       data: product,
+    };
+  }
+
+  async searchProduct(query: string) {
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.variants', 'variants')
+      .leftJoinAndSelect('product.images', 'images')
+      .where('product.name ILIKE :query', { query: `%${query}%` }) // tìm theo tên nếu có
+      .select([
+        'product.id',
+        'product.name',
+        'product.slug',
+        'variants.name',
+        'variants.price',
+        'images.url',
+      ])
+      .getMany();
+
+    if (product.length === 0) {
+      return {
+        success: false,
+        message: 'Không tìm thấy sản phẩm nào',
+      };
+    }
+    const data = product.map((item) => ({
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      price: item.variants[0]?.price,
+      image: item.images[0]?.url ?? null,
+    }));
+
+    return {
+      success: true,
+      message: 'Tìm kiếm sản phẩm thành công',
+      data: data,
+    };
+  }
+
+  async searchProductDetail(query: string, userId?: number) {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.variants', 'variants')
+      .leftJoinAndSelect('variants.unit', 'unit')
+      .where('product.name ILIKE :query', { query: `%${query}%` })
+      .select([
+        'product.id',
+        'product.name',
+        'product.slug',
+        'category.name',
+        'images.url',
+        'variants.price',
+        'unit.symbol',
+      ])
+      .getMany();
+
+    if (products.length === 0) {
+      return {
+        success: false,
+        message: 'Không tìm thấy sản phẩm nào',
+      };
+    }
+
+    // Lấy sản phẩm yêu thích nếu có userId
+    const favoriteProduct = userId
+      ? await this.favoriteProductRepository
+          .createQueryBuilder('fp')
+          .leftJoin('fp.product', 'product')
+          .where('fp.user_id = :userId', { userId })
+          .select('product.id', 'product')
+          .getRawMany()
+      : [];
+
+    const favoriteProductIds = new Set(
+      favoriteProduct.map((item) => item.product),
+    );
+
+    const results = products.map((item) => ({
+      ...item,
+      variants: [item.variants[0]],
+      isFavorite: favoriteProductIds.has(item.id),
+    }));
+
+    return {
+      success: true,
+      message: 'Tìm kiếm sản phẩm chi tiết thành công',
+      data: results,
     };
   }
 }

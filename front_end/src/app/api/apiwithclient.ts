@@ -79,6 +79,10 @@ export const getProductsAPI = async (page: number, limit: number) => {
   )
   return res.data
 }
+export const searchProductsAPI = async (query: string) => {
+  const res = await authorizedAxiosInstance.get(`product/search?q=${query}`)
+  return res.data
+}
 
 // FAVORITE PRODUCT
 export const getFavoriteProductsAPI = async () => {
@@ -97,6 +101,7 @@ export const deleteFavoriteProductAPI = async (productId: number) => {
   )
   return res.data
 }
+
 // REVIEWS
 export const createReviewAPI = async (data: IFormDataReview) => {
   const res = await authorizedAxiosInstance.post(`/comment/create`, data)

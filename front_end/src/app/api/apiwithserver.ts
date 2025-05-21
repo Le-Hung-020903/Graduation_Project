@@ -50,6 +50,22 @@ export const getProductList = async (
   return res.json()
 }
 
+export const searchProductsAPI = async (
+  query: string,
+  accessToken?: string
+) => {
+  const headers: Record<string, string> = {}
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`
+  }
+  const res = await fetch(`${API_ROOT}/product/search/detail?q=${query}`, {
+    method: "GET",
+    credentials: "include",
+    headers
+  })
+  return res.json()
+}
+
 // CATEGORIES
 export const getCategoriesAPI = async (): Promise<{
   success: boolean

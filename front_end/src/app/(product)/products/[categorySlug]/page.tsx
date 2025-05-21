@@ -29,7 +29,7 @@ const PageCategorySlug = async ({ params }: PageProps) => {
     { title: "Products", url: "/products" }
   ]
 
-  const categoryBreadcrumb = categoryPath.map((item) => ({
+  const categoryBreadcrumb = categoryPath?.map((item) => ({
     title: item.name,
     url: `/products/${item.slug}`
   }))

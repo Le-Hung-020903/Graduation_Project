@@ -44,6 +44,19 @@ export class ProductController {
   }
 
   @Public()
+  @Get('/search/detail')
+  searchProductDetail(@Query('q') query: string, @Req() req) {
+    const userId: number = req.user?.id;
+    return this.productService.searchProductDetail(query, userId);
+  }
+
+  @Public()
+  @Get('/search')
+  searchProduct(@Query('q') query: string) {
+    return this.productService.searchProduct(query);
+  }
+
+  @Public()
   @Get()
   findAllWithoutCategory(
     @Req() req,
