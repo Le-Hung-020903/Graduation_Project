@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography"
 import FavoriteButton from "./FavoriteButton"
 import { IProductListItem } from "../_interfaces/product"
 import Link from "next/link"
+import { formattedAmount } from "../utils/formatMoney"
 
 interface CardProductProps {
   product: IProductListItem
@@ -155,7 +156,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
                     lineHeight: "20px"
                   }}
                 >
-                  {`${price.toLocaleString()} VNĐ`}
+                  {formattedAmount(price)}
                 </Typography>
               </Stack>
             </CardContent>

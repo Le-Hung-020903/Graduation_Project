@@ -50,7 +50,7 @@ export const getProductList = async (
   return res.json()
 }
 
-export const searchProductsAPI = async (
+export const searchProductDetailAPI = async (
   query: string,
   accessToken?: string
 ) => {

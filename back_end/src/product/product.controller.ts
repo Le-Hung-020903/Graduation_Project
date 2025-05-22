@@ -80,11 +80,6 @@ export class ProductController {
   }
 
   @Public()
-  @Get('get_variant')
-  getVariantByProduct() {
-    return this.productService.getVariantByProduct();
-  }
-  @Public()
   @Get(':param')
   findOne(@Param('param') param: string, @Req() req) {
     const userId = req?.user?.userId;

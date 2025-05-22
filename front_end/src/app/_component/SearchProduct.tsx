@@ -2,16 +2,22 @@ import React from "react"
 import Box from "@mui/material/Box"
 import PageBreadcrumbs from "./Breadcrumbs"
 import Divider from "@mui/material/Divider"
+import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
+import { IProductListItem } from "../_interfaces/product"
+import CardProduct from "./CardProduct"
 
 type SearchProductProps = {
   breadCrumb: Array<{ title: string; url: string }>
   query: string | string[] | undefined
+  data: {
+    message: string
+    success: boolean
+    data?: IProductListItem[]
+  }
 }
 
-const SearchProduct = ({ breadCrumb, query }: SearchProductProps) => {
-  console.log("query", query)
-
+const SearchProduct = ({ breadCrumb, query, data }: SearchProductProps) => {
   return (
     <Box
       sx={{
@@ -39,8 +45,31 @@ const SearchProduct = ({ breadCrumb, query }: SearchProductProps) => {
           mt: 3
         }}
       >
-        Đã tìm thấy 4 kết quả phù hợp
+        {`Đã tìm thấy ${data.success ? data.data?.length : 0} kết quả phù hợp`}
       </Typography>
+      {!data.success && (
+        <Box
+          sx={{
+            mt: 10,
+            textAlign: "center"
+          }}
+        >
+          <Typography variant="h4">{`${data.message} với từ khoá ${query}`}</Typography>
+        </Box>
+      )}
+      <Box
+        sx={{
+          mt: 6
+        }}
+      >
+        <Grid container spacing={4}>
+          {data.data?.map((item) => (
+            <Grid item md={3} key={item.id}>
+              <CardProduct product={item} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Box>
   )
 }
