@@ -118,3 +118,11 @@ export const getReviewsAPI = async (
   )
   return res.data
 }
+
+// CHATBOT
+export const getChatbotResponseAPI = async (question: string) => {
+  const res = await authorizedAxiosInstance.post(`/google-generative-ai`, {
+    question
+  })
+  return res.data
+}

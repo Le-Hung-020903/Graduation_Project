@@ -49,6 +49,10 @@ import { Address } from './user/address/entities/address.entity';
 import { CommentModule } from './product/comment/comment.module';
 import { FavoriteProductModule } from './product/favorite_product/favorite_product.module';
 import { AuthenticationMiddleware } from './authentication/authentication.middleware';
+import { BrevoEmailController } from './brevo-email/brevo-email.controller';
+import { BrevoEmailService } from './brevo-email/brevo-email.service';
+import { BrevoEmailModule } from './brevo-email/brevo-email.module';
+import { GoogleGenerativeAiModule } from './google-generative-ai/google-generative-ai.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -112,8 +116,10 @@ import { AuthenticationMiddleware } from './authentication/authentication.middle
     ModulesModule,
     CommentModule,
     FavoriteProductModule,
+    BrevoEmailModule,
+    GoogleGenerativeAiModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, BrevoEmailController],
   providers: [
     AppService,
     {
@@ -124,6 +130,7 @@ import { AuthenticationMiddleware } from './authentication/authentication.middle
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
+    BrevoEmailService,
   ],
 })
 export class AppModule {

@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.8.1",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.2.6",
     "lodash": "^4.17.21",
     "next": "15.1.4",
     "react": "^19.0.0",

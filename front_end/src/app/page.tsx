@@ -11,6 +11,7 @@ import Comments from "./_component/Comments"
 import Footer from "./_component/Footer"
 import Header from "./_component/Header"
 import NavigationBar from "./_component/NavigationBar"
+import Chatbot from "./_component/Chatbot"
 
 const page = () => {
   return (
@@ -24,6 +25,7 @@ const page = () => {
       <BestSeller />
       {/* <BestDeals /> */}
       {/* <Comments /> */}
+      <Chatbot />
       <Footer />
     </Container>
   )
