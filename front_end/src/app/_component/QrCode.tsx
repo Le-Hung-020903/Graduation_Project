@@ -21,9 +21,11 @@ import Link from "next/link"
 import { checkStatusOrderAPI } from "../api/apiwithclient"
 import { useSelector } from "react-redux"
 import { selectOrder } from "@/redux/slice/orderSlice"
+import { initSocket } from "../library/websocket/socket"
 
 const QrCode = () => {
   const router = useRouter()
+  const socket = initSocket()
   const { totalPrice, orderCode } = useSelector(selectOrder)
 
   // Với việc sepay chỉ chấp nhận làdufng webhook khi đã deloy nên dùng cách là
@@ -51,6 +53,15 @@ const QrCode = () => {
             paymentStatus: "PAID"
           }
         })
+
+        // gửi socket đi cho Admin nhận biết
+        const socketOrderData = {
+          order_code: orderCode,
+          payment_status: "PAID",
+          payment_method: "QR_PAYMENT"
+        }
+        socket.emit("new_order", socketOrderData)
+
         if (timerRef.current) {
           clearInterval(timerRef.current)
           timerRef.current = null // Xóa giá trị sau khi dừng interval
@@ -69,6 +80,7 @@ const QrCode = () => {
       } // ✅ Cleanup interval khi rời khỏi trang
     }
   }, [orderCode, router])
+
   return (
     <Container
       maxWidth="lg"

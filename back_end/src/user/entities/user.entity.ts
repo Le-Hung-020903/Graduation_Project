@@ -16,6 +16,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Address } from '../address/entities/address.entity';
+import { Notification } from 'src/notifications/entities/notification.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -102,4 +103,7 @@ export class User {
     onDelete: 'CASCADE',
   })
   addresses: Address[];
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 }

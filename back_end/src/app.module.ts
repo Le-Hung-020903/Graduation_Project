@@ -53,6 +53,9 @@ import { BrevoEmailController } from './brevo-email/brevo-email.controller';
 import { BrevoEmailService } from './brevo-email/brevo-email.service';
 import { BrevoEmailModule } from './brevo-email/brevo-email.module';
 import { GoogleGenerativeAiModule } from './google-generative-ai/google-generative-ai.module';
+import { OrderNotificationModule } from './order-notification/order-notification.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { Notification } from './notifications/entities/notification.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -94,6 +97,7 @@ import { GoogleGenerativeAiModule } from './google-generative-ai/google-generati
           Modules,
           Action,
           Address,
+          Notification,
         ],
         synchronize: true,
         // logging: true,
@@ -118,6 +122,8 @@ import { GoogleGenerativeAiModule } from './google-generative-ai/google-generati
     FavoriteProductModule,
     BrevoEmailModule,
     GoogleGenerativeAiModule,
+    OrderNotificationModule,
+    NotificationsModule,
   ],
   controllers: [AppController, BrevoEmailController],
   providers: [
