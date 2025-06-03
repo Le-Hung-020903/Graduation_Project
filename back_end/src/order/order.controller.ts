@@ -18,6 +18,7 @@ import { Public } from 'src/Decorator/auth.decorator';
 import { CheckOrderStatusDto } from './order_detail/dto/check-order-status.dto';
 import { UpdateStatusOrder } from './dto/update-status-order';
 import { CreateOrderByAdmin } from './dto/create-order-admin.dto';
+import { Permissions } from 'src/Decorator/roles.decorator';
 
 @Controller('order')
 export class OrderController {
@@ -29,7 +30,7 @@ export class OrderController {
     return this.orderService.create(createOrderDto, userId);
   }
 
-  @Public()
+  @Permissions('orders.insert')
   @Post('create_order_by_admin')
   createOrderByAdmin(@Body() createOrderByAdminDto: CreateOrderByAdmin) {
     return this.orderService.createOrderByAdmin(createOrderByAdminDto);
@@ -106,6 +107,7 @@ export class OrderController {
     return this.orderService.update(+id, updateOrderDto, userId);
   }
 
+  @Permissions('orders.delete')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);

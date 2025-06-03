@@ -2,6 +2,7 @@ import { Container } from "@mui/material"
 import React from "react"
 import Header from "../_component/Header"
 import NavigationBar from "../_component/NavigationBar"
+import Footer from "../_component/Footer"
 
 const ProductLayout = ({
   children
@@ -13,6 +14,7 @@ const ProductLayout = ({
       <Header />
       <NavigationBar />
       {children}
+      <Footer />
     </Container>
   )
 }

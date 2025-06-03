@@ -32,13 +32,17 @@ import { formatDate } from "../utils/formatDate"
 import { IAddress } from "../_interfaces/user"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
-import { PaymentMethod } from "../_interfaces/order"
+import { IWebsocketOrderData, PaymentMethod } from "../_interfaces/order"
 import { AppDispatch } from "@/redux/store"
 import { selectOrderItems, setOrder } from "@/redux/slice/orderSlice"
 import Address from "./Address"
+import { initSocket } from "../library/websocket/socket"
+import { selectCurrentUser } from "@/redux/slice/userSlice"
 
 const Order = () => {
   const router = useRouter()
+  const socket = initSocket()
+  const user = useSelector(selectCurrentUser)
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState<boolean>(false)
   const [openDiscount, setOpenDiscount] = useState<boolean>(false)
@@ -100,6 +104,18 @@ const Order = () => {
                 paymentMethod === PaymentMethod.COD
                   ? "/thankyou"
                   : `/checkout/${res.data.order_code}`
+
+              if (paymentMethod === PaymentMethod.COD) {
+                const socketOrderData: IWebsocketOrderData = {
+                  order_code: res.data.order_code,
+                  payment_status: "UNPAID",
+                  payment_method: "COD",
+                  admin_redirect_url: "/order",
+                  user_redirect_url: "/member/history",
+                  user_id: user?.id
+                }
+                socket.emit("new_order", socketOrderData)
+              }
               router.push(redirectUrl)
             }
           })
@@ -117,6 +133,18 @@ const Order = () => {
             paymentMethod === PaymentMethod.COD
               ? "/thankyou"
               : `/checkout/${res.data.order_code}`
+
+          if (paymentMethod === PaymentMethod.COD) {
+            const socketOrderData: IWebsocketOrderData = {
+              order_code: res.data.order_code,
+              payment_status: "UNPAID",
+              payment_method: "COD",
+              admin_redirect_url: "/order",
+              user_redirect_url: "/member/history",
+              user_id: user?.id
+            }
+            socket.emit("new_order", socketOrderData)
+          }
           router.push(redirectUrl)
         })
       }
@@ -262,7 +290,7 @@ const Order = () => {
                     >
                       <Image
                         src={optimizeCloudinaryImage(
-                          item.images.url ? item.images.url : "",
+                          item.images?.url || "",
                           400,
                           400
                         )}

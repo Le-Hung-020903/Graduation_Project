@@ -13,12 +13,13 @@ import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { ILike } from 'typeorm';
 import { Public } from 'src/Decorator/auth.decorator';
+import { Permissions } from 'src/Decorator/roles.decorator';
 
 @Controller('discount')
 export class DiscountController {
   constructor(private readonly discountService: DiscountService) {}
 
-  @Public()
+  @Permissions('discounts.insert')
   @Post('create')
   create(@Body() createDiscountDto: CreateDiscountDto) {
     return this.discountService.create(createDiscountDto);
@@ -69,7 +70,7 @@ export class DiscountController {
     return this.discountService.findOne(+id);
   }
 
-  @Public()
+  @Permissions('discounts.update')
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -78,7 +79,7 @@ export class DiscountController {
     return this.discountService.update(+id, updateDiscountDto);
   }
 
-  @Public()
+  @Permissions('discounts.delete')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.discountService.remove(+id);

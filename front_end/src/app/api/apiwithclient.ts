@@ -126,3 +126,9 @@ export const getChatbotResponseAPI = async (question: string) => {
   })
   return res.data
 }
+
+// NOTIFICATION
+export const getNotificationAPI = async () => {
+  const res = await authorizedAxiosInstance.get("/notifications/client")
+  return res.data.data
+}

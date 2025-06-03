@@ -26,16 +26,12 @@ export class ModulesService {
     const exitsActions = await this.actionRepository.find({
       where: { name: In(actionNames) },
     });
-    console.log('🚀 ~ ModulesService ~ create ~ exitsActions:', exitsActions);
 
     // **2️⃣ Lọc ra những actions chưa có trong DB**
     const exitsingActionNames = new Set(
       exitsActions.map((action) => action.name.trim().toLowerCase()),
     );
-    console.log(
-      '🚀 ~ ModulesService ~ create ~ exitsingActionNames:',
-      exitsingActionNames,
-    );
+
     const newActions = actions
       .filter(
         (action) => !exitsingActionNames.has(action.name.trim().toLowerCase()),
@@ -45,7 +41,6 @@ export class ModulesService {
           name: action.name.trim().toLowerCase(),
         }),
       );
-    console.log('🚀 ~ ModulesService ~ create ~ newActions:', newActions);
 
     // **3️⃣ Nếu có actions mới, lưu vào DB**
     if (newActions.length > 0) {
@@ -54,7 +49,6 @@ export class ModulesService {
 
     // **4️⃣ Kết hợp actions đã có và mới tạo**
     const allActions = [...exitsActions, ...newActions];
-    console.log('🚀 ~ ModulesService ~ create ~ allActions:', allActions);
 
     // **5️⃣ Tạo module và liên kết với actions**
     const module = await this.moduleRepository.create({

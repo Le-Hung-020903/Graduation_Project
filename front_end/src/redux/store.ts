@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage"
 import { configureStore } from "@reduxjs/toolkit"
 import cartSlice from "./slice/cartSlice"
 import orderSlice from "./slice/orderSlice"
+import notificationSlice from "./slice/notification"
 import { userReducer } from "./slice/userSlice"
 
 // Cấu hình persist
@@ -18,7 +19,8 @@ const rootPersistConfig = {
 const reducers = combineReducers({
   cart: cartSlice,
   user: userReducer,
-  order: orderSlice
+  order: orderSlice,
+  notification: notificationSlice
 })
 
 // thực hiện persist reducer

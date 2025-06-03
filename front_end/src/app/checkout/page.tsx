@@ -5,6 +5,7 @@ import Header from "../_component/Header"
 import NavigationBar from "../_component/NavigationBar"
 import Box from "@mui/material/Box"
 import Order from "../_component/order"
+import Footer from "../_component/Footer"
 
 export const metadata: Metadata = {
   title: "Pay with your order",
@@ -19,6 +20,7 @@ const PageOrder = () => {
       <Box>
         <Order />
       </Box>
+      <Footer />
     </Container>
   )
 }

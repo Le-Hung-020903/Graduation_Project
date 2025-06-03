@@ -19,8 +19,7 @@ import { Public } from 'src/Decorator/auth.decorator';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Public() // Cách bỏ qua AuthGuard
-  // @Permissions('category.create')
+  @Permissions('categories.insert')
   @Post('create')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -50,8 +49,8 @@ export class CategoryController {
     return this.categoryService.findOne(param);
   }
 
-  @Public()
   @Patch(':id')
+  @Permissions('categories.update')
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -59,9 +58,8 @@ export class CategoryController {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
-  @Public()
   @Delete(':id')
-  // @Permissions('category.delete')
+  @Permissions('categories.delete')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
   }

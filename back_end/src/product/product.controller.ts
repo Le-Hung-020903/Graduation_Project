@@ -17,13 +17,14 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/Decorator/auth.decorator';
+import { Permissions } from 'src/Decorator/roles.decorator';
 const LIMIT_COMMON_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOW_COMMON_FILE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Public()
+  @Permissions('products.insert')
   @Post('create')
   @UseInterceptors(
     FilesInterceptor('files', 5, {
@@ -86,7 +87,7 @@ export class ProductController {
     return this.productService.findOne(param, Number(userId));
   }
 
-  @Public()
+  @Permissions('products.update')
   @Patch(':id')
   @UseInterceptors(
     FilesInterceptor('files', 5, {
@@ -107,7 +108,7 @@ export class ProductController {
     return this.productService.update(+id, updateProductDto, files);
   }
 
-  @Public()
+  @Permissions('products.delete')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);

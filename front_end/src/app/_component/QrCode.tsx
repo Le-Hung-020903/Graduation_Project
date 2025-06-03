@@ -22,8 +22,11 @@ import { checkStatusOrderAPI } from "../api/apiwithclient"
 import { useSelector } from "react-redux"
 import { selectOrder } from "@/redux/slice/orderSlice"
 import { initSocket } from "../library/websocket/socket"
+import { IWebsocketOrderData } from "../_interfaces/order"
+import { selectCurrentUser } from "@/redux/slice/userSlice"
 
 const QrCode = () => {
+  const user = useSelector(selectCurrentUser)
   const router = useRouter()
   const socket = initSocket()
   const { totalPrice, orderCode } = useSelector(selectOrder)
@@ -55,10 +58,13 @@ const QrCode = () => {
         })
 
         // gửi socket đi cho Admin nhận biết
-        const socketOrderData = {
+        const socketOrderData: IWebsocketOrderData = {
           order_code: orderCode,
           payment_status: "PAID",
-          payment_method: "QR_PAYMENT"
+          payment_method: "QR_PAYMENT",
+          admin_redirect_url: "/order",
+          user_redirect_url: "/member/history",
+          user_id: user?.id
         }
         socket.emit("new_order", socketOrderData)
 

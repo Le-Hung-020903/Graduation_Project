@@ -6,6 +6,7 @@ import SearchProduct from "../_component/SearchProduct"
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { searchProductDetailAPI } from "../api/apiwithserver"
+import Footer from "../_component/Footer"
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -40,6 +41,7 @@ const PageSearch = async ({ searchParams }: Props) => {
       <Header />
       <NavigationBar />
       <SearchProduct breadCrumb={breadCrumb} query={q} data={searchProduct} />
+      <Footer />
     </Container>
   )
 }

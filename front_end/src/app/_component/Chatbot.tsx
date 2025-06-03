@@ -66,10 +66,10 @@ const Chatbot = () => {
             elevation={6}
             sx={{
               position: "fixed",
-              bottom: 100,
+              bottom: 120,
               right: 45,
               width: 400,
-              height: 600,
+              height: 500,
               display: "flex",
               flexDirection: "column",
               borderRadius: 2,
@@ -166,20 +166,53 @@ const Chatbot = () => {
         </Zoom>
       )}
       <Box
+        onClick={() => {
+          setOpen((prev) => !prev)
+        }}
         sx={{
+          cursor: "pointer",
           position: "fixed",
-          bottom: 35,
+          bottom: 30,
           right: 35,
           zIndex: 1000,
-          width: 50,
-          height: 50,
-          borderRadius: "50%"
+          width: 60,
+          height: 60,
+          borderRadius: "50%",
+          "& .ripple": {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: 60,
+            height: 60,
+            borderRadius: "50%",
+            backgroundColor: "primary.main",
+            transform: "translate(-50%, -50%)",
+            opacity: 0.5,
+            animation: "pulseAnimation 3s ease-out infinite"
+          },
+          "& .ripple:nth-of-type(1)": {
+            animationDelay: "0s"
+          },
+          "& .ripple:nth-of-type(2)": {
+            animationDelay: "1.5s"
+          },
+          "@keyframes pulseAnimation": {
+            "0%": {
+              transform: "translate(-50%, -50%) scale(1)",
+              opacity: 0.5
+            },
+            "100%": {
+              transform: "translate(-50%, -50%) scale(2.5)",
+              opacity: 0
+            }
+          }
         }}
       >
+        {/* Sóng lan tỏa */}
+        <Box className="ripple" />
+        <Box className="ripple" />
+        {/* Nút chat */}
         <IconButton
-          onClick={() => {
-            setOpen((prev) => !prev)
-          }}
           sx={{
             width: 60,
             height: 60,

@@ -34,3 +34,25 @@ interface Product {
     name: string
   }
 }
+export interface IWebsocketOrderData {
+  order_code: string
+  payment_status: "UNPAID" | "PAID"
+  payment_method: "COD" | "QR_PAYMENT"
+  admin_redirect_url?: string
+  user_redirect_url?: string
+  user_id?: number
+}
+export interface IWebsocketOrder {
+  id: number
+  title: string
+  message: string
+  is_read: boolean
+  user_redirec_url: string | null
+  admin_redirec_url: string | null
+  receiver_role: "USER" | "ADMIN"
+  user: {
+    id: number
+  }
+  created_at: string
+  updated_at: string
+}

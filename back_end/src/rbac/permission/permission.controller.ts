@@ -11,12 +11,13 @@ import { PermissionService } from './permission.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { Public } from 'src/Decorator/auth.decorator';
+import { Permissions } from 'src/Decorator/roles.decorator';
 
 @Controller('permission')
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
-  @Public()
+  @Permissions('roles.insert')
   @Post('create')
   create(@Body() createPermissionDto: CreatePermissionDto) {
     return this.permissionService.create(createPermissionDto);
@@ -32,7 +33,7 @@ export class PermissionController {
     return this.permissionService.findOne(+id);
   }
 
-  @Public()
+  @Permissions('roles.update')
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -41,6 +42,7 @@ export class PermissionController {
     return this.permissionService.update(+id, updatePermissionDto);
   }
 
+  @Permissions('roles.delete')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.permissionService.remove(+id);

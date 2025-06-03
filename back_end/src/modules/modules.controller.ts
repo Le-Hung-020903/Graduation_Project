@@ -11,12 +11,13 @@ import { ModulesService } from './modules.service';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
 import { Public } from 'src/Decorator/auth.decorator';
+import { Permissions } from 'src/Decorator/roles.decorator';
 
 @Controller('modules')
 export class ModulesController {
   constructor(private readonly modulesService: ModulesService) {}
 
-  @Public()
+  @Permissions('module.insert')
   @Post('create')
   create(@Body() createModuleDto: CreateModuleDto) {
     return this.modulesService.create(createModuleDto);

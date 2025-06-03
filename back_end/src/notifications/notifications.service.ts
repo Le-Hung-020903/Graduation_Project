@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { Repository } from 'typeorm';
@@ -42,8 +42,41 @@ export class NotificationsService {
     };
   }
 
-  findAll() {
-    return `This action returns all notifications`;
+  async findAllClient(userId: number) {
+    if (!userId) return;
+    const notifications = await this.notificationRepository.find({
+      where: {
+        user: { id: userId },
+        receiver_role: 'USER',
+      },
+      order: {
+        created_at: 'DESC',
+      },
+    });
+    return {
+      success: true,
+      message: 'Lấy thông báo thành công',
+      data: notifications,
+    };
+  }
+
+  async findAllAdmin(userId: number) {
+    if (!userId) {
+      throw new UnauthorizedException('Vui lòng đăng nhập để lấy thông báo');
+    }
+
+    const notifications = await this.notificationRepository.find({
+      where: {
+        receiver_role: 'ADMIN',
+      },
+      order: { created_at: 'DESC' },
+    });
+
+    return {
+      success: true,
+      message: 'Lấy thông báo thành công',
+      data: notifications,
+    };
   }
 
   findOne(id: number) {

@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import NavigationBar from "@/app/_component/NavigationBar"
 import Header from "@/app/_component/Header"
 import QrCode from "@/app/_component/QrCode"
+import Footer from "@/app/_component/Footer"
 
 export const metadata: Metadata = {
   title: "Pay with QR Code",
@@ -15,6 +16,7 @@ const PageQrCode = () => {
       <Header />
       <NavigationBar />
       <QrCode />
+      <Footer />
     </Container>
   )
 }

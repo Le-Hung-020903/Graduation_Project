@@ -47,22 +47,6 @@ export class orderNotificationGateway {
     @MessageBody() message: createNotification,
     client: Socket,
   ) {
-    // // Gửi cho Admin
-    // console.log('New order received:', message);
-    // this.server.to('admin').emit('notify_new_order', {
-    //   ...message,
-    // });
-
-    // // Gửi cho chính người đặt
-    // if (message.user_id) {
-    //   this.server.to(`user_${message.user_id}`).emit('notify_user', {
-    //     title: 'Đặt hàng thành công',
-    //     message: `Đơn hàng ${message.order_code} đã được xác nhận`,
-    //     order_code: message.order_code,
-    //     payment_method: message.payment_method,
-    //   });
-    // }
-
     // Tạo hai bản ghi thông báo: một cho admin và một cho người dùng
     const messageText =
       message.payment_method === 'COD'
@@ -80,14 +64,14 @@ export class orderNotificationGateway {
     // Emit về phòng admin
     this.server.to('admin').emit(
       'notify_new_order',
-      createdNotification.data.filter((n) => n.receiver_role === 'ADMIN'),
+      createdNotification.data.find((n) => n.receiver_role === 'ADMIN'),
     );
 
     // Emit về phòng người dùng
     if (message.user_id) {
       this.server.to(`user_${message.user_id}`).emit(
         'notify_user',
-        createdNotification.data.filter((n) => n.receiver_role === 'USER'),
+        createdNotification.data.find((n) => n.receiver_role === 'USER'),
       );
     }
   }

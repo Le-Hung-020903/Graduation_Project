@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ILike } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Public } from 'src/Decorator/auth.decorator';
+import { Permissions } from 'src/Decorator/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -99,6 +100,7 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @Permissions('users.delete')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -20,9 +21,15 @@ export class NotificationsController {
     return this.notificationsService.create(createNotificationDto);
   }
 
-  @Get()
-  findAll() {
-    return this.notificationsService.findAll();
+  @Get('client')
+  findAll(@Req() req) {
+    const userId: number = req.user?.id;
+    return this.notificationsService.findAllClient(userId);
+  }
+  @Get('admin')
+  findAllAdmin(@Req() req) {
+    const userId: number = req.user?.id;
+    return this.notificationsService.findAllAdmin(userId);
   }
 
   @Get(':id')
