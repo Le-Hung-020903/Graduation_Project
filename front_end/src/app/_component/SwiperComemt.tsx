@@ -75,9 +75,9 @@ function SwiperComemt({ data }: ISwiperCommentsProps) {
                     }}
                   >
                     <Image
-                      src={item.avatar}
-                      width={0}
-                      height={0}
+                      src={item.user.avatar ?? "/images/Icon/user-comment.png"}
+                      width={100}
+                      height={100}
                       alt="avatar"
                       className="avatar"
                       style={{ width: "100%", height: "auto" }}
@@ -109,7 +109,7 @@ function SwiperComemt({ data }: ISwiperCommentsProps) {
                     fontSize: "12px"
                   }}
                 >
-                  {item.user}
+                  {item.user.name}
                 </Typography>
               </Box>
             </SwiperSlide>

@@ -102,13 +102,13 @@ const Footer = () => {
                 </Typography>
               </Box>
               <Box>
-                <Typography>Thứ hai - thứ 6: 8am - 4pm</Typography>
+                <Typography>Thứ hai - thứ sáu: 8am - 4pm</Typography>
                 <Typography
                   sx={{
                     mt: 2
                   }}
                 >
-                  Thứ 7: 9am - 5pm
+                  Thứ bẩy: 9am - 5pm
                 </Typography>
               </Box>
             </Box>

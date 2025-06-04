@@ -154,9 +154,42 @@ export class CommentService {
     };
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} comment`;
-  // }
+  async getCommentFiveStar(): Promise<{
+    success: boolean;
+    message: string;
+    data: Comment[];
+  }> {
+    // const comments = await this.commentRepository.find({
+    //   where: {
+    //     rating: 5,
+    //   },
+    //   order: { created_at: 'DESC' },
+    //   take: 3,
+    // });
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where('comment.rating = :rating', { rating: 5 })
+      .distinctOn(['comment.user_id']) // mỗi user 1 comment
+      .orderBy('comment.user_id', 'ASC') // cần để distinctOn hoạt động chính xác
+      .addOrderBy('comment.created_at', 'DESC') // lấy bình luận mới nhất của mỗi user
+      .select([
+        'comment.id',
+        'comment.content',
+        'comment.rating',
+        'comment.image_url',
+        'user.name',
+        'user.avatar',
+      ])
+      .limit(3) // giới hạn 3 người dùng
+      .getMany();
+
+    return {
+      success: true,
+      message: 'Lấy bình luận 5 sao thành công',
+      data: comments,
+    };
+  }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
     return `This action updates a #${id} comment`;

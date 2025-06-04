@@ -1,4 +1,5 @@
 import { ICategory } from "../_interfaces/category"
+import { IComments } from "../_interfaces/comment"
 import { IManufacturer } from "../_interfaces/manufacturer"
 import { IOrderResponse } from "../_interfaces/order"
 import { orderDetailResponse } from "../_interfaces/orderDetail"
@@ -135,4 +136,14 @@ export const getOrderDetailAPI = async (
     headers
   })
   return res.json()
+}
+
+// COMMENTS
+export const getHighlightCommentAPI = async (): Promise<{
+  success: boolean
+  message: string
+  data: IComments[]
+}> => {
+  const response = await fetch(`${API_ROOT}/comment/highlight-comments`)
+  return response.json()
 }

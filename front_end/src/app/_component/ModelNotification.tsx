@@ -29,6 +29,7 @@ import { getNotificationsMiddleware } from "@/redux/middlewares/notificationMidd
 export default function ModelNotification() {
   const socket = initSocket()
   const user = useSelector(selectCurrentUser)
+  console.log("🚀 ~ ModelNotification ~ user:", user)
   const dispatch = useDispatch<AppDispatch>()
   const notifications = useSelector(selectNotifications)
   const isFetched = useSelector(selectIsFetched)
@@ -47,10 +48,10 @@ export default function ModelNotification() {
   const id = open ? "simple-popover" : undefined
 
   React.useEffect(() => {
-    if (!isFetched) {
+    if (user && !isFetched) {
       dispatch(getNotificationsMiddleware())
     }
-  }, [dispatch, isFetched])
+  }, [user, isFetched, dispatch])
 
   React.useEffect(() => {
     if (!user?.id) return

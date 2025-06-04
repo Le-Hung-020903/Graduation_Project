@@ -1,6 +1,10 @@
 export interface IComments {
   id: number
   content: string
-  user: string
-  avatar: string
+  rating: number
+  image_url: string | null
+  user: {
+    name: string
+    avatar: string
+  }
 }

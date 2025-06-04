@@ -16,6 +16,10 @@ export const changePasswordUserAPI = async (data: {
   const res = await authorizedAxiosInstance.patch(`/auth/change-password`, data)
   return res.data
 }
+export const logoutUserAPI = async () => {
+  const res = await authorizedAxiosInstance.post("/auth/logout")
+  return res.data
+}
 
 // DISCOUNT
 export const getDiscountAPI = async () => {

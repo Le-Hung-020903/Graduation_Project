@@ -13,6 +13,12 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import RateReviewIcon from "@mui/icons-material/RateReview"
 import Box from "@mui/material/Box"
 import Link from "next/link"
+import { toast } from "react-toastify"
+import { useRouter } from "next/navigation"
+import { logoutUserAPI } from "../api/apiwithclient"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "@/redux/store"
+import { clearUser } from "@/redux/slice/userSlice"
 
 const activeStyle = {
   borderRadius: "8px",
@@ -23,6 +29,8 @@ const activeStyle = {
 
 const MenuProfile = () => {
   const pathname = usePathname()
+  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
 
   // Kiểm tra đường dẫn hiện tại để xác định mục nào đang active
   const isActive = (path: string) => {
@@ -66,7 +74,16 @@ const MenuProfile = () => {
       text: "Thoát tài khoản"
     }
   ]
-
+  const handleLogout = async () => {
+    if (confirm("Bạn có chắc chắn muốn đăng xuất không ???")) {
+      toast.promise(logoutUserAPI(), {}).then((res) => {
+        if (res.message === "Đăng xuất thành công" && res.success) {
+          router.push("/login")
+          dispatch(clearUser())
+        }
+      })
+    }
+  }
   return (
     <Box
       sx={{
@@ -85,23 +102,50 @@ const MenuProfile = () => {
           }
         }}
       >
-        {menuItems.map((item) => (
-          <ListItem key={item.path} sx={isActive(item.path) ? activeStyle : {}}>
-            <Link
-              href={item.path}
-              style={{
-                display: "flex",
-                width: "100%",
-                textDecoration: "none",
-                color: "inherit",
-                alignItems: "center"
+        {menuItems.map((item) => {
+          const isLogout = item.path === "/logout"
+
+          return (
+            <ListItem
+              key={item.path}
+              sx={isActive(item.path) ? activeStyle : {}}
+              onClick={() => {
+                if (isLogout) {
+                  handleLogout() // gọi hàm logout
+                }
               }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </Link>
-          </ListItem>
-        ))}
+              {isLogout ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    textDecoration: "none",
+                    color: "inherit",
+                    alignItems: "center"
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </Box>
+              ) : (
+                <Link
+                  href={item.path}
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    textDecoration: "none",
+                    color: "inherit",
+                    alignItems: "center"
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </Link>
+              )}
+            </ListItem>
+          )
+        })}
       </List>
     </Box>
   )

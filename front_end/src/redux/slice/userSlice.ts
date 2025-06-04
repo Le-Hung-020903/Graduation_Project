@@ -19,7 +19,11 @@ export const userSlice = createSlice({
   initialState,
 
   //reducer dong bo
-  reducers: {},
+  reducers: {
+    clearUser: (state) => {
+      state.currentUser = null
+    }
+  },
 
   // extraReducers noi xu ly data bat dog bo
   extraReducers: (builder) => {
@@ -41,5 +45,6 @@ export const userSlice = createSlice({
 export const selectCurrentUser = (state: RootState) => {
   return state.user.currentUser
 }
+export const { clearUser } = userSlice.actions
 
 export const userReducer = userSlice.reducer

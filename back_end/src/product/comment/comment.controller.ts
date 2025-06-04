@@ -45,6 +45,12 @@ export class CommentController {
   }
 
   @Public()
+  @Get('highlight-comments')
+  getCommentFiveStar() {
+    return this.commentService.getCommentFiveStar();
+  }
+
+  @Public()
   @Get(':id')
   findAll(
     @Param('id') id: string,
@@ -55,11 +61,6 @@ export class CommentController {
     const limit = parseInt(_limit);
     return this.commentService.findAll(page, limit, +id);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.commentService.findOne(+id);
-  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {

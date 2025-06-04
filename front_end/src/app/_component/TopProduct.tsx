@@ -37,6 +37,10 @@ async function TopProduct() {
         alignItems={"center"}
         sx={{
           mt: "20px",
+          "& a": {
+            textDecoration: "none",
+            color: "inherit"
+          },
           "& .MuiTypography-root": {
             padding: "8px 16px", // Thêm padding cố định
             position: "relative", // Cần thiết cho pseudo-element
@@ -52,20 +56,30 @@ async function TopProduct() {
           }
         }}
       >
-        <Typography
-          sx={{
-            fontWeight: "bold",
-            color: "primary.main",
-            bgcolor: "#FFF8E1",
-            borderRadius: "999px"
-          }}
-        >
-          All Product
-        </Typography>
-        <Typography>Cá và hải sản</Typography>
-        <Typography>Rau củ quả</Typography>
-        <Typography>Thức uống dinh dưỡng</Typography>
-        <Typography>Gia vị sạch</Typography>
+        <Link href={"/"}>
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              color: "primary.main",
+              bgcolor: "#FFF8E1",
+              borderRadius: "999px"
+            }}
+          >
+            All Product
+          </Typography>
+        </Link>
+        <Link href={"/products/thit-ca-hai-san"}>
+          <Typography>Cá và hải sản</Typography>
+        </Link>
+        <Link href={"/products/rau-cu-qua"}>
+          <Typography>Rau củ quả</Typography>
+        </Link>
+        <Link href={"/products/thuc-uong-dinh-duong"}>
+          <Typography>Thức uống dinh dưỡng</Typography>
+        </Link>
+        <Link href={"/products/gia-vi-sach"}>
+          <Typography>Gia vị sạch</Typography>
+        </Link>
       </Stack>
       <Grid container spacing={3.5} sx={{ mt: "60px" }}>
         {productList.length > 0 ? (

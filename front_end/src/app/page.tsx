@@ -24,7 +24,7 @@ const page = () => {
       <CookingInstructions />
       <BestSeller />
       {/* <BestDeals /> */}
-      {/* <Comments /> */}
+      <Comments />
       <Chatbot />
       <Footer />
     </Container>
