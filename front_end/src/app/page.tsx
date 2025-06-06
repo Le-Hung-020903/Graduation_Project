@@ -17,6 +17,7 @@ const page = () => {
   return (
     <Container maxWidth="lg">
       <Header />
+      {/* <ModeSwitch /> */}
       <NavigationBar />
       <Slider />
       <Discount />

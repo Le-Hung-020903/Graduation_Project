@@ -85,16 +85,8 @@ async function TopProduct() {
         {productList.length > 0 ? (
           productList.map(
             (product) =>
-              product && ( // Kiểm tra nếu product tồn tại
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  key={product.id}
-                  sx={{ display: "flex" }}
-                >
+              product && (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                   <CardProduct product={product} />
                 </Grid>
               )

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { Repository } from 'typeorm';
@@ -83,11 +87,49 @@ export class NotificationsService {
     return `This action returns a #${id} notification`;
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  async updateNotification(
+    id: number,
+    updateNotificationDto: UpdateNotificationDto,
+    userId: number,
+  ): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    const notification = await this.notificationRepository.findOne({
+      where: {
+        id: id,
+        user: { id: userId },
+      },
+    });
+
+    updateNotificationDto.updated_at = new Date();
+    if (!notification) {
+      throw new NotFoundException('Không tìm thấy thông báo để cập nhật');
+    }
+    await this.notificationRepository.update(id, updateNotificationDto);
+    return {
+      success: true,
+      message: 'Cập nhật thông báo thành công',
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async removeNotification(id: number): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    const notification = await this.notificationRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('Không tìm thấy thông báo để xoá');
+    }
+    await this.notificationRepository.remove(notification);
+    return {
+      success: true,
+      message: 'Xoá thông báo thành công',
+    };
   }
 }

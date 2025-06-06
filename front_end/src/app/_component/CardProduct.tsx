@@ -38,7 +38,8 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
     <Link
       href={`/${slug}`}
       style={{
-        textDecoration: "none"
+        textDecoration: "none",
+        display: "block"
       }}
     >
       <Box
@@ -46,8 +47,8 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
           position: "relative",
           paddingBottom: "0px",
           transition: "box-shadow 0.3s ease",
-          width: "100%", // ⚠️ Bắt buộc
-          minWidth: 0, // ⚠️ Quan trọng: Fix overflow MUI
+          width: "100%",
+          minWidth: 0,
           display: "flex",
           flexDirection: "column",
           border: "1px solid #E2E3E4",
@@ -72,12 +73,11 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
         <Card>
           <Box
             sx={{
-              height: 200, // Cố định chiều cao
-              width: "100%", // Chiếm toàn bộ chiều rộng
               display: "flex",
               alignItems: "center", // Canh giữa theo chiều dọc
               justifyContent: "center", // Canh giữa theo chiều ngang
-              p: 2
+              p: 2,
+              width: "100%"
             }}
           >
             <CardMedia
@@ -89,7 +89,8 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
                 mt: "24px",
                 objectFit: "cover",
                 width: "100%",
-                height: "100%"
+                height: 200,
+                flex: 1
               }}
             />
           </Box>
@@ -111,7 +112,8 @@ const CardProduct: React.FC<CardProductProps> = ({ product }) => {
                   sx={{
                     fontWeight: "600",
                     fontSize: "12px",
-                    lineHeight: "16px"
+                    lineHeight: "16px",
+                    textWrap: "nowrap"
                   }}
                 >
                   {category?.name || "Không xác định"}

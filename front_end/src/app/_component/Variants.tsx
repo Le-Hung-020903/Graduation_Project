@@ -12,12 +12,15 @@ import { IProduct, IVariant } from "../_interfaces/product"
 import { toast } from "react-toastify"
 import { createCartAPI } from "../api/apiwithclient"
 import Link from "next/link"
+import { useSelector } from "react-redux"
+import { selectCurrentUser } from "@/redux/slice/userSlice"
 
 interface IVariantsProp {
   data: IProduct
 }
 
 const Variants = ({ data }: IVariantsProp) => {
+  const user = useSelector(selectCurrentUser)
   const [variant, setVariant] = useState<IVariant | null>(null)
   const [quantity, setQuantity] = useState<number>(1)
   const [total, setTotal] = useState<number>(0)
@@ -49,20 +52,24 @@ const Variants = ({ data }: IVariantsProp) => {
   }, [data.variants])
 
   const handleSubmit = () => {
-    const cart_product: {
-      quantity: number
-      product_id: number
-      variant_id: number
-      price: number
-    } = {
-      quantity,
-      product_id: data.id,
-      variant_id: variant?.id ? variant?.id : 0,
-      price: total
+    if (!user) {
+      toast.warning("Yêu cầu bạn đăng nhập để thêm sản phẩm vào giỏ hàng !!!")
+      return
     }
-    toast.promise(createCartAPI(cart_product), {}).then((res) => {
-      if (res.success) toast.success("Thêm giỏ hàng thành công")
-    })
+    // const cart_product: {
+    //   quantity: number
+    //   product_id: number
+    //   variant_id: number
+    //   price: number
+    // } = {
+    //   quantity,
+    //   product_id: data.id,
+    //   variant_id: variant?.id ? variant?.id : 0,
+    //   price: total
+    // }
+    // toast.promise(createCartAPI(cart_product), {}).then((res) => {
+    //   if (res.success) toast.success("Thêm giỏ hàng thành công")
+    // })
   }
   // ✅ Nếu chưa có dữ liệu, không render tiếp
   if (!variant) return null
@@ -218,27 +225,29 @@ const Variants = ({ data }: IVariantsProp) => {
                 width: "100%"
               }}
             >
-              THÊM VÀO GIỎ
+              {user ? "THÊM VÀO GIỎ" : "ĐĂNG NHẬP ĐỂ MUA HÀNG"}
             </Button>
           </Box>
         </Stack>
-        <Box
-          sx={{
-            mt: 2
-          }}
-        >
-          <Link href={"/cart"}>
-            <Button
-              variant="contained"
-              sx={{
-                width: "100%",
-                p: 1.5
-              }}
-            >
-              Mua ngay
-            </Button>
-          </Link>
-        </Box>
+        {user ? (
+          <Box
+            sx={{
+              mt: 2
+            }}
+          >
+            <Link href={"/cart"}>
+              <Button
+                variant="contained"
+                sx={{
+                  width: "100%",
+                  p: 1.5
+                }}
+              >
+                Mua ngay
+              </Button>
+            </Link>
+          </Box>
+        ) : null}
       </Box>
     </Box>
   )

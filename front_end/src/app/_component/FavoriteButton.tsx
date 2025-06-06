@@ -9,6 +9,8 @@ import {
   deleteFavoriteProductAPI
 } from "../api/apiwithclient"
 import { toast } from "react-toastify"
+import { useSelector } from "react-redux"
+import { selectCurrentUser } from "@/redux/slice/userSlice"
 
 const FavoriteButton = ({
   isFavorite,
@@ -17,12 +19,16 @@ const FavoriteButton = ({
   isFavorite: boolean
   productId: number
 }) => {
+  const user = useSelector(selectCurrentUser)
   const [FavoriteProduct, setFavoriteProduct] = useState<boolean>(isFavorite)
 
   const handleSubmitFavorite = (event: React.MouseEvent) => {
     event.stopPropagation() // Ngăn sự kiện lan đến thẻ cha (Link)
     event.preventDefault() // Ngăn Link tự động chuyển trang
-
+    if (!user) {
+      toast.warning("Yêu cầu bạn đănng nhập để thêm sản phẩm yêu thích !!!")
+      return
+    }
     const newValue = !FavoriteProduct
     setFavoriteProduct(newValue)
     if (newValue) {

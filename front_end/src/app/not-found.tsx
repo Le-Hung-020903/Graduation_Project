@@ -3,18 +3,13 @@ import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import Image from "next/image"
 import Link from "next/link"
-import Header from "./_component/Header"
-import NavigationBar from "./_component/NavigationBar"
 export default function NotFound() {
   return (
     <>
-      <Container maxWidth="lg">
-        <Header />
-        <NavigationBar />
-      </Container>
+      <Container maxWidth="lg"></Container>
       <Box
         sx={{
-          mt: 2,
+          mt: 13,
           backgroundImage: "url('/images/Icon/404Bg.jpeg')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",

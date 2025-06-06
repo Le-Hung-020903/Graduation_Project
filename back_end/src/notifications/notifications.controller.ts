@@ -38,15 +38,21 @@ export class NotificationsController {
   }
 
   @Patch(':id')
-  update(
+  updateNotification(
     @Param('id') id: string,
     @Body() updateNotificationDto: UpdateNotificationDto,
+    @Req() req,
   ) {
-    return this.notificationsService.update(+id, updateNotificationDto);
+    const userId: number = req.user?.id;
+    return this.notificationsService.updateNotification(
+      +id,
+      updateNotificationDto,
+      userId,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationsService.remove(+id);
+  removeNotification(@Param('id') id: string) {
+    return this.notificationsService.removeNotification(+id);
   }
 }

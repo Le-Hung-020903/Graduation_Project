@@ -36,7 +36,6 @@ export class Notification {
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
-    select: false,
   })
   updated_at: Date;
 

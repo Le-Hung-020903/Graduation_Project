@@ -136,3 +136,18 @@ export const getNotificationAPI = async () => {
   const res = await authorizedAxiosInstance.get("/notifications/client")
   return res.data.data
 }
+
+export const updateNotificationAPI = async (
+  id: number,
+  { is_read }: { is_read: boolean }
+) => {
+  const res = await authorizedAxiosInstance.patch(`/notifications/${id}`, {
+    is_read
+  })
+  return res.data
+}
+
+export const deleteNotificationAPI = async (id: number) => {
+  const res = await authorizedAxiosInstance.delete(`/notifications/${id}`)
+  return res.data
+}

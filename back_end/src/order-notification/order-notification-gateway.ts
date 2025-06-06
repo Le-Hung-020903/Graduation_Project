@@ -85,7 +85,7 @@ export class orderNotificationGateway {
     // Khi người dùng join room riêng của mình, sẽ không có thông báo gì cả
     // Chỉ có người dùng mới join room này
     console.log(`Client ${client.id} joined user room: ${room}`);
-    client.join(`user_${room}`);
+    client.join(room);
   }
 
   @SubscribeMessage('connection')

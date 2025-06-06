@@ -15,8 +15,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Website Clean Food",
-  description: "Clean food is always the first choice"
+  title: "Website Thực Phẩm Sạch",
+  description: "Thực phẩm sạch luôn là sự lựa chọn hàng đầu của mỗi gia đình"
 }
 
 export default function RootLayout({

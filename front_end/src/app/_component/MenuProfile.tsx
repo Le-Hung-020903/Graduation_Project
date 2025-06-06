@@ -8,9 +8,9 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import HomeIcon from "@mui/icons-material/Home"
 import HistoryIcon from "@mui/icons-material/History"
 import PersonIcon from "@mui/icons-material/Person"
-import PhoneForwardedIcon from "@mui/icons-material/PhoneForwarded"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import RateReviewIcon from "@mui/icons-material/RateReview"
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble"
 import Box from "@mui/material/Box"
 import Link from "next/link"
 import { toast } from "react-toastify"
@@ -60,7 +60,7 @@ const MenuProfile = () => {
     },
     {
       path: "/support",
-      icon: <PhoneForwardedIcon />,
+      icon: <ChatBubbleIcon />,
       text: "Hỗ trợ"
     },
     {

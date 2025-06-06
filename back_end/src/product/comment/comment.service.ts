@@ -159,13 +159,6 @@ export class CommentService {
     message: string;
     data: Comment[];
   }> {
-    // const comments = await this.commentRepository.find({
-    //   where: {
-    //     rating: 5,
-    //   },
-    //   order: { created_at: 'DESC' },
-    //   take: 3,
-    // });
     const comments = await this.commentRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.user', 'user')

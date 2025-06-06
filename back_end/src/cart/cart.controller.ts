@@ -30,17 +30,13 @@ export class CartController {
     return this.cartService.findByUser(userId);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCartDto: UpdateCartDto,
-    @Req() req,
-  ) {
+  @Patch()
+  update(@Body() updateCartDto: UpdateCartDto, @Req() req) {
     const userId: number = req.user?.id;
     if (Object.keys(updateCartDto).length === 0) {
       throw new BadRequestException('Không có dữ liệu để cập nhật');
     }
-    return this.cartService.update(+id, updateCartDto, userId);
+    return this.cartService.update(updateCartDto, userId);
   }
 
   @Public()

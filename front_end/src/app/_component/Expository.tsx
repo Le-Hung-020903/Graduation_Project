@@ -26,6 +26,7 @@ import dayjs from "dayjs"
 import { IPaganation } from "../_interfaces/pagination"
 import { useSelector } from "react-redux"
 import { selectCurrentUser } from "@/redux/slice/userSlice"
+import { toast } from "react-toastify"
 interface ProductProps {
   productId: number
 }
@@ -51,6 +52,10 @@ const Expository = ({ productId }: ProductProps) => {
     product_id: productId
   }
   const submitComment = async () => {
+    if (!user) {
+      toast.warning("Yêu cần bạn đăng nhập để được nhận xét kỹ hơn !!!")
+      return
+    }
     const fakeId = Date.now()
     startTransition(async () => {
       const fakeComment: IReviews = {

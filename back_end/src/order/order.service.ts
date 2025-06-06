@@ -154,6 +154,7 @@ export class OrderService {
       success: true,
       message: 'Đơn hàng tổn tại',
       data: {
+        id: exitsOrder.id,
         payment_status: exitsOrder.payment_status,
       },
     };

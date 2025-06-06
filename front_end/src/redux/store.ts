@@ -11,7 +11,7 @@ import { userReducer } from "./slice/userSlice"
 const rootPersistConfig = {
   key: "root", // key của persist do chsung ta chỉ định, mặc định là root
   storage: storage, // biến storage ở trên - lưu vào local storage
-  whitelist: ["cart", "user"] // định nghĩa các slice dữ liệu ĐƯỢC PHÉP duy trì qua mỗi lần f5
+  whitelist: ["cart"] // định nghĩa các slice dữ liệu ĐƯỢC PHÉP duy trì qua mỗi lần f5
   //   blacklist: ['user'] // định nghĩa các slice dữ liệu KHÔNG ĐƯỢC PHÉP duy trì qua mỗi lần f5
 }
 

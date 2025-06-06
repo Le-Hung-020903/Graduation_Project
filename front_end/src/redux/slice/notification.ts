@@ -18,7 +18,6 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     addNotification: (state, action: PayloadAction<INotifications>) => {
-      console.log("✅ thủ công payload:", action.payload) // ← thêm log
       state.notifications = state.notifications
         ? [action.payload, ...state.notifications]
         : [action.payload]

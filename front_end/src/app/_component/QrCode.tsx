@@ -63,7 +63,7 @@ const QrCode = () => {
           payment_status: "PAID",
           payment_method: "QR_PAYMENT",
           admin_redirect_url: "/order",
-          user_redirect_url: "/member/history",
+          user_redirect_url: `/member/history/${data.id}`,
           user_id: user?.id
         }
         socket.emit("new_order", socketOrderData)

@@ -112,17 +112,9 @@ export class CartService {
     };
   }
 
-  async update(
-    id: number,
-    updateCartDto: UpdateCartDto,
-    userId: number,
-  ): Promise<{
-    success: boolean;
-    message: string;
-    data: CartProduct;
-  }> {
+  async update(updateCartDto: UpdateCartDto, userId: number) {
     const cart = await this.cartRepository.findOne({
-      where: { id: Number(id), user: { id: userId } },
+      where: { user: { id: userId } },
       relations: ['cartProducts'],
     });
 
