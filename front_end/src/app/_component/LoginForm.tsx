@@ -31,6 +31,8 @@ import { AppDispatch } from "@/redux/store"
 import { loginUserAPI } from "@/redux/middlewares/userMiddlewares"
 import { toast } from "react-toastify"
 import ButtonGoogle from "./ButtonGoogle"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -50,6 +52,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   })
 }))
 const LoginForm = () => {
+  const [hiddenPassword, setHiddenPassowrd] = useState(true)
   const [open, setOpen] = useState<boolean>(false)
   type Inputs = {
     email: string
@@ -144,23 +147,44 @@ const LoginForm = () => {
                   Forgot your password?
                 </MuiLink>
               </Box>
-              <TextField
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                required
-                fullWidth
-                variant="outlined"
-                error={!!errors["password"]}
-                {...register("password", {
-                  required: FIELD_REQUIRE_MESSAGE,
-                  pattern: {
-                    value: PASSWORD_RULE,
-                    message: PASSWORD_RULE_MESSAGE
-                  }
-                })}
-              />
+              <Box
+                sx={{
+                  position: "relative"
+                }}
+              >
+                <TextField
+                  placeholder="••••••"
+                  type={hiddenPassword ? "password" : "text"}
+                  id="password"
+                  autoComplete="current-password"
+                  required
+                  fullWidth
+                  variant="outlined"
+                  error={!!errors["password"]}
+                  {...register("password", {
+                    required: FIELD_REQUIRE_MESSAGE,
+                    pattern: {
+                      value: PASSWORD_RULE,
+                      message: PASSWORD_RULE_MESSAGE
+                    }
+                  })}
+                />
+                <Box
+                  onClick={() => setHiddenPassowrd(!hiddenPassword)}
+                  sx={{
+                    cursor: "pointer",
+                    position: "absolute",
+                    top: "50%",
+                    right: "16px",
+                    transform: "translateY(-30%)",
+                    zIndex: 1,
+                    color: "gray"
+                  }}
+                >
+                  {hiddenPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </Box>
+              </Box>
+
               <FieldErrorAlert errors={errors} fieldName={"password"} />
             </Box>
             <FormControlLabel

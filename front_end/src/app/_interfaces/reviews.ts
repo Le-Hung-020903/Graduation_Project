@@ -14,6 +14,7 @@ export interface IReviews
   user: {
     id: number
     name: string
+    avatar: string
   }
   hasPurchased: boolean
   pending?: boolean

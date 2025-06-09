@@ -58,6 +58,12 @@ export class ProductController {
   }
 
   @Public()
+  @Get('get_variant')
+  getVariantByProduct() {
+    return this.productService.getVariantByProduct();
+  }
+
+  @Public()
   @Get()
   findAllWithoutCategory(
     @Req() req,

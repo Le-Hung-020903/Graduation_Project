@@ -108,6 +108,7 @@ export class CommentService {
         'comment.created_at',
         'user.id',
         'user.name',
+        'user.avatar',
       ])
       .orderBy('comment.created_at', 'DESC')
       .offset(skip)

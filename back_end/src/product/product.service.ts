@@ -439,6 +439,37 @@ export class ProductService {
     };
   }
 
+  async getVariantByProduct(): Promise<{
+    success: boolean;
+    message: string;
+    data: {
+      id: number;
+      variants: {
+        id: number;
+        name: string;
+        price: number;
+      }[];
+    }[];
+  }> {
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.variants', 'variant')
+      .select([
+        'product.id',
+        'product.name',
+        'variant.id',
+        'variant.name',
+        'variant.price',
+      ])
+      .getMany();
+    if (!product) throw new NotFoundException('Sản phẩm không tồn tại');
+    return {
+      success: true,
+      message: 'Lấy biến thể thành công',
+      data: product,
+    };
+  }
+
   async searchProductDetail(query: string, userId?: number) {
     const products = await this.productRepository
       .createQueryBuilder('product')

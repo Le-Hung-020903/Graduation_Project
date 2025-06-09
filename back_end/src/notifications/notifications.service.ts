@@ -112,6 +112,30 @@ export class NotificationsService {
       message: 'Cập nhật thông báo thành công',
     };
   }
+  async updateNotificationAdmin(
+    id: number,
+    updateNotificationDto: UpdateNotificationDto,
+  ): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    const notification = await this.notificationRepository.findOne({
+      where: {
+        id: id,
+        receiver_role: 'ADMIN',
+      },
+    });
+
+    updateNotificationDto.updated_at = new Date();
+    if (!notification) {
+      throw new NotFoundException('Không tìm thấy thông báo để cập nhật');
+    }
+    await this.notificationRepository.update(id, updateNotificationDto);
+    return {
+      success: true,
+      message: 'Cập nhật thông báo thành công',
+    };
+  }
 
   async removeNotification(id: number): Promise<{
     success: boolean;

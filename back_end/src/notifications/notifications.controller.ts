@@ -37,6 +37,16 @@ export class NotificationsController {
     return this.notificationsService.findOne(+id);
   }
 
+  @Patch('admin/:id')
+  updateNotificationAdmin(
+    @Param('id') id: string,
+    @Body() updateNotificationDto: UpdateNotificationDto,
+  ) {
+    return this.notificationsService.updateNotificationAdmin(
+      +id,
+      updateNotificationDto,
+    );
+  }
   @Patch(':id')
   updateNotification(
     @Param('id') id: string,

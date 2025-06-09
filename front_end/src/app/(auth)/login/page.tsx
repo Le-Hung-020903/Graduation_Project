@@ -4,8 +4,8 @@ import Box from "@mui/material/Box"
 import LoginForm from "@/app/_component/LoginForm"
 
 export const metadata: Metadata = {
-  title: "Login and enjoy",
-  description: "Clean food is always the first choice"
+  title: "Đăng nhập và trải nghiệm",
+  description: "Thực phẩm sạch luôn là sự lựa chọn hàng đầu"
 }
 export default function PageLogin() {
   return (

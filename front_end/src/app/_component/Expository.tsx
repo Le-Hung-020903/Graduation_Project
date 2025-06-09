@@ -51,6 +51,7 @@ const Expository = ({ productId }: ProductProps) => {
     parent_id: null,
     product_id: productId
   }
+
   const submitComment = async () => {
     if (!user) {
       toast.warning("Yêu cần bạn đăng nhập để được nhận xét kỹ hơn !!!")
@@ -80,7 +81,7 @@ const Expository = ({ productId }: ProductProps) => {
         // 👇 Thay thế comment giả bằng comment thật từ server (kèm pending = false)
         setListComment((pre) => {
           const updatedComment = pre.filter((item) => item.id !== fakeId)
-          return [{ ...res.data, pending: false }, updatedComment]
+          return [{ ...res.data, pending: false }, ...updatedComment]
         })
 
         // Reset form
@@ -178,6 +179,7 @@ const Expository = ({ productId }: ProductProps) => {
                 onClick={submitComment}
               >
                 <Button
+                  className="interceptor-loading"
                   variant="contained"
                   color="primary"
                   size="small"
@@ -190,7 +192,14 @@ const Expository = ({ productId }: ProductProps) => {
           </Stack>
           {optimatic.map((item) => {
             return (
-              <Box key={item.id} sx={{ mt: 4 }}>
+              <Box
+                key={item.id}
+                sx={{
+                  mt: 4,
+                  opacity: item.pending ? 0.5 : 1,
+                  transition: "opacity 0.3s ease"
+                }}
+              >
                 <Stack direction="row" spacing={2} alignItems="flex-start">
                   {/* Khối avatar */}
                   <Box
@@ -204,7 +213,7 @@ const Expository = ({ productId }: ProductProps) => {
                     }}
                   >
                     <Image
-                      src="https://i.pravatar.cc/45?img=2"
+                      src={item.user.avatar ?? "/images/Icon/user-comment.png"}
                       width={0}
                       height={0}
                       sizes="100vw"
