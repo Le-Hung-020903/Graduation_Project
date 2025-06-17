@@ -61,6 +61,9 @@ export default function ModelNotification() {
   const handleDeleteNotification = (id: number) => {
     toast.promise(deleteNotificationAPI(id), {}).then((res) => {
       if (res.success && res.message === "Xoá thông báo thành công") {
+        toast.success(res.message, {
+          position: "bottom-left"
+        })
         dispatch(getNotificationsMiddleware())
       }
     })
@@ -93,10 +96,27 @@ export default function ModelNotification() {
       dispatch(addNotification(notification))
     }
 
+    const handleOnChangeOrderStatus = (order: IWebsocketOrder) => {
+      toast.success(`${order.message}`)
+      const notification = {
+        id: order.id,
+        title: order.title,
+        message: order.message,
+        is_read: order.is_read,
+        user_redirec_url: order.user_redirec_url,
+        admin_redirec_url: null,
+        created_at: order.created_at,
+        receiver_role: "USER" as const
+      }
+      dispatch(addNotification(notification))
+    }
+
     socket.on("notify_user", handleNewOrderNotification)
+    socket.on("order_confirmed", handleOnChangeOrderStatus)
 
     return () => {
       socket.off("notify_user", handleNewOrderNotification)
+      socket.off("order_confirmed", handleOnChangeOrderStatus)
     }
   }, [user?.id, dispatch, socket])
   return (

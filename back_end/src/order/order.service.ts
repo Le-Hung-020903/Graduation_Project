@@ -13,6 +13,8 @@ import { OrderDetailService } from './order_detail/order_detail.service';
 import { CheckOrderStatusDto } from './order_detail/dto/check-order-status.dto';
 import { UpdateStatusOrder } from './dto/update-status-order';
 import { CreateOrderByAdmin } from './dto/create-order-admin.dto';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { orderNotificationGateway } from 'src/order-notification/order-notification-gateway';
 
 @Injectable()
 export class OrderService {
@@ -20,6 +22,8 @@ export class OrderService {
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     private readonly orderDetailService: OrderDetailService,
+    private readonly notificationService: NotificationsService,
+    private readonly orderNotificationGateway: orderNotificationGateway,
   ) {}
   async create(
     createOrderDto: CreateOrderDto,
@@ -430,14 +434,28 @@ export class OrderService {
     if (!userId) throw new UnauthorizedException('Vui lòng đăng nhập');
     const order = await this.orderRepository.findOne({
       where: { id: orderId },
+      relations: ['user'],
     });
     if (!order) throw new NotFoundException('Đơn hàng không tồn tại');
 
-    await this.orderRepository.update(orderId, {
-      note: Body.note,
-      status: Body.status,
-      address: { id: Body.address_id },
-    });
+    if (order.status !== Body.status) {
+      // Gửi thông báo về cho người dùng nếu khác status
+      const createdNotification = await this.notificationService.confirmOrder({
+        title: 'Xác nhận đơn hàng',
+        message: `Đã xác nhận đơn hàng ${order.order_code} có phương thức thanh toán ${order.payment_method} và trạng thái là ${Body.status}`,
+        user_redirect_url: `/member/history/${order.id}`,
+        user_id: order.user.id,
+      });
+      this.orderNotificationGateway.server
+        .to(`user_${order.user.id}`)
+        .emit('order_confirmed', createdNotification.data);
+    }
+
+    const payload: any = {};
+    if (Body.address_id !== 0) payload.address = { id: Body.address_id };
+    if (Body.status !== undefined) payload.status = Body.status;
+    if (Body.note !== undefined) payload.note = Body.note;
+    await this.orderRepository.update(orderId, payload);
 
     const newOrder = await this.orderRepository
       .createQueryBuilder('order')

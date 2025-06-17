@@ -43,7 +43,6 @@ export class CartProductController {
     return this.cartProductService.update(+id, updateCartProductDto);
   }
 
-  @Public()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.cartProductService.remove(+id);

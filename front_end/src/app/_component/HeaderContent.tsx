@@ -15,6 +15,7 @@ import ModelNotification from "./ModelNotification"
 import Person2Icon from "@mui/icons-material/Person2"
 import { AppDispatch } from "@/redux/store"
 import { loginUserGoogleAPI } from "@/redux/middlewares/userMiddlewares"
+import { selectLengthCarts } from "@/redux/slice/cartSlice"
 
 const flexCenter = {
   display: "flex",
@@ -27,6 +28,7 @@ interface IAccessTokenProps {
 const HeaderContent = ({ accessToken }: IAccessTokenProps) => {
   const user = useSelector(selectCurrentUser)
   const dispatch = useDispatch<AppDispatch>()
+  const cartLength = useSelector(selectLengthCarts)
 
   // Sau khi dẫn đến tranng đăng nhập google và tạo tk ở db thì
   // không tự dispatch để tạo user nên cần call api profile luôn ở đây
@@ -72,7 +74,7 @@ const HeaderContent = ({ accessToken }: IAccessTokenProps) => {
           <ModelNotification />
           <Link href={"/cart"} style={{ textDecoration: "none" }}>
             <Box sx={{ ...flexCenter, gap: "4px", cursor: "pointer" }}>
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={cartLength} color="error">
                 <Box
                   sx={{
                     width: 50,

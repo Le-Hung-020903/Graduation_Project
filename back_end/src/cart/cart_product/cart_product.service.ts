@@ -27,31 +27,25 @@ export class CartProductService {
     });
 
     if (cartProduct) {
-      console.log('Before update:', cartProduct);
-
-      // 2. Cộng thêm số lượng và giá
+      // 2. Ghi đè số lượng
       cartProduct.quantity += quantity;
-      cartProduct.price += price;
       cartProduct.updated_at = new Date();
 
       // 3. Lưu lại vào DB (dùng save để ghi đè)
       await this.cartProductRepository.save(cartProduct);
-
-      console.log('After update:', cartProduct);
       return cartProduct;
-    } else {
-      // 4. Nếu chưa tồn tại, tạo mới
-      const newCartProduct = this.cartProductRepository.create({
-        quantity,
-        price,
-        product: { id: product_id },
-        cart: { id: cart_id },
-        variant: { id: variant_id },
-      });
-
-      await this.cartProductRepository.save(newCartProduct);
-      return newCartProduct;
     }
+    // 4. Nếu chưa tồn tại, tạo mới
+    const newCartProduct = this.cartProductRepository.create({
+      quantity,
+      price,
+      product: { id: product_id },
+      cart: { id: cart_id },
+      variant: { id: variant_id },
+    });
+
+    await this.cartProductRepository.save(newCartProduct);
+    return newCartProduct;
   }
 
   findAll() {

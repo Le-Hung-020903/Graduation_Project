@@ -7,8 +7,8 @@ import Cart from "../_component/cart"
 import Footer from "../_component/Footer"
 
 export const metadata: Metadata = {
-  title: "Clean food cart",
-  description: "Please continue to checkout"
+  title: "Giỏ hàng",
+  description: "Hãy tiếp tục để thannh toán nha"
 }
 const PageCart = () => {
   return (

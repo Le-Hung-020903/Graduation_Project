@@ -3,6 +3,8 @@ export interface IProduct {
   name: string
   slug: string
   desc_html: string
+  manufacture_date: string
+  expiry_date: string
   created_at: string // Hoặc Date nếu bạn parse sang kiểu Date trong frontend
   images: IProductImage[]
   category: ICategory

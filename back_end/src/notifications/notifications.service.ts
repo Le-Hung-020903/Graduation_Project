@@ -46,6 +46,27 @@ export class NotificationsService {
     };
   }
 
+  async confirmOrder(createNotificationDto: CreateNotificationDto): Promise<{
+    success: boolean;
+    message: string;
+    data: Notification;
+  }> {
+    const notification = this.notificationRepository.create({
+      title: createNotificationDto.title,
+      message: createNotificationDto.message,
+      user_redirec_url: createNotificationDto.user_redirect_url ?? '',
+      is_read: false,
+      user: { id: createNotificationDto.user_id },
+      receiver_role: 'USER',
+    });
+    await this.notificationRepository.save(notification);
+    return {
+      success: true,
+      message: 'Tạo thông báo thành công',
+      data: notification,
+    };
+  }
+
   async findAllClient(userId: number) {
     if (!userId) return;
     const notifications = await this.notificationRepository.find({

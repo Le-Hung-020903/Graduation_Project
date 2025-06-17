@@ -35,6 +35,7 @@ const Expository = ({ productId }: ProductProps) => {
   const user = useSelector(selectCurrentUser)
   const [loading, setLoading] = useState<boolean>(false)
   const [listComment, setListComment] = useState<IReviews[]>([])
+  console.log("🚀 ~ Expository ~ listComment:", listComment)
   const [optimatic, setOptimatic] = useOptimistic<IReviews[]>(listComment)
   const [pagination, setPagination] = useState<IPaganation>({
     total: 0,
@@ -67,7 +68,8 @@ const Expository = ({ productId }: ProductProps) => {
         image_url: null,
         user: {
           id: user?.id ? user?.id : 0,
-          name: user?.name ? user?.name : "Người dùng"
+          name: user?.name ? user?.name : "Người dùng",
+          avatar: user.avatar ?? ""
         },
         hasPurchased: false,
         pending: true
@@ -190,155 +192,176 @@ const Expository = ({ productId }: ProductProps) => {
               </Box>
             </Box>
           </Stack>
-          {optimatic.map((item) => {
-            return (
-              <Box
-                key={item.id}
-                sx={{
-                  mt: 4,
-                  opacity: item.pending ? 0.5 : 1,
-                  transition: "opacity 0.3s ease"
-                }}
-              >
-                <Stack direction="row" spacing={2} alignItems="flex-start">
-                  {/* Khối avatar */}
-                  <Box
-                    sx={{
-                      height: "45px",
-                      width: "45px",
-                      borderRadius: "50%",
-                      overflow: "hidden",
-                      backgroundColor: "#F0F0F0",
-                      border: "1px solid #F0F0F0"
-                    }}
-                  >
-                    <Image
-                      src={item.user.avatar ?? "/images/Icon/user-comment.png"}
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                      alt="Logo website clean food"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover"
+          {optimatic.length === 0 ? (
+            <Typography
+              sx={{
+                ml: 6.5,
+                mt: 4
+              }}
+            >
+              Hãy thêm ý kiến của mọi người về sản phẩm này nha
+            </Typography>
+          ) : (
+            optimatic.map((item) => {
+              return (
+                <Box
+                  key={item.id}
+                  sx={{
+                    mt: 4,
+                    opacity: item.pending ? 0.5 : 1,
+                    transition: "opacity 0.3s ease"
+                  }}
+                >
+                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                    {/* Khối avatar */}
+                    <Box
+                      sx={{
+                        height: "45px",
+                        width: "45px",
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        backgroundColor: "#F0F0F0",
+                        border: "1px solid #F0F0F0"
                       }}
-                    />
-                  </Box>
+                    >
+                      <Image
+                        src={
+                          item.user.avatar ?? "/images/Icon/user-comment.png"
+                        }
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        alt="Logo website clean food"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover"
+                        }}
+                      />
+                    </Box>
 
-                  {/* Khối nội dung - sắp xếp theo column */}
-                  <Stack direction="column" sx={{ flex: 1 }}>
-                    {/* Dòng 1: Tên + ngày + số sao */}
-                    <Stack direction="row" alignItems="center" flexWrap="wrap">
-                      <Stack direction="row" spacing={0.5} alignItems="center">
+                    {/* Khối nội dung - sắp xếp theo column */}
+                    <Stack direction="column" sx={{ flex: 1 }}>
+                      {/* Dòng 1: Tên + ngày + số sao */}
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        flexWrap="wrap"
+                      >
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          alignItems="center"
+                        >
+                          <Typography
+                            sx={{
+                              textTransform: "capitalize"
+                            }}
+                          >
+                            {item.user.name},
+                          </Typography>
+                          <Typography sx={{ color: "#A7A7A7" }}>
+                            {dayjs(item.created_at).format(
+                              "DD [Th] MM [năm] YYYY"
+                            )}
+                          </Typography>
+                        </Stack>
+
+                        <Divider
+                          orientation="vertical"
+                          variant="middle"
+                          flexItem
+                          sx={{
+                            height: "15px",
+                            width: "1px",
+                            backgroundColor: "black",
+                            mx: "5px"
+                          }}
+                        />
+
+                        <Stack
+                          direction="row"
+                          sx={{
+                            "& .MuiSvgIcon-root": {
+                              fontSize: "14px"
+                            }
+                          }}
+                        >
+                          {Array.from({ length: 5 }).map((_, index) => {
+                            return (
+                              <StarIcon
+                                key={index}
+                                sx={{
+                                  color:
+                                    index < item.rating
+                                      ? "rgb(250, 175, 0)"
+                                      : "#000"
+                                }}
+                              />
+                            )
+                          })}
+                        </Stack>
+                      </Stack>
+
+                      {/* Dòng 2: Thông tin đã mua */}
+                      {item.hasPurchased && (
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <Box
+                            sx={{
+                              border: "2px solid",
+                              borderColor: "success.main",
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 20,
+                              height: 20
+                            }}
+                          >
+                            <DoneIcon
+                              sx={{ fontSize: "15px", color: "primary.main" }}
+                            />
+                          </Box>
+                          <Typography
+                            component="span"
+                            fontSize={15}
+                            color="primary.main"
+                            sx={{
+                              fontWeight: "bold"
+                            }}
+                          >
+                            Đã mua tại cửa hàng Minh Anh
+                          </Typography>
+                        </Stack>
+                      )}
+
+                      {/* Dòng 3: Nội dung đánh giá */}
+                      <Stack
+                        direction={"row"}
+                        alignContent={"center"}
+                        spacing={3}
+                      >
                         <Typography
                           sx={{
+                            fontWeight: 400,
+                            mt: 2.5,
                             textTransform: "capitalize"
                           }}
                         >
-                          {item.user.name},
+                          {item.content}
                         </Typography>
-                        <Typography sx={{ color: "#A7A7A7" }}>
-                          {dayjs(item.created_at).format(
-                            "DD [Th] MM [năm] YYYY"
-                          )}
-                        </Typography>
+                        {item.pending && (
+                          <Typography sx={{ mt: 2.5, opacity: "0.5" }}>
+                            đang viết...
+                          </Typography>
+                        )}
                       </Stack>
-
-                      <Divider
-                        orientation="vertical"
-                        variant="middle"
-                        flexItem
-                        sx={{
-                          height: "15px",
-                          width: "1px",
-                          backgroundColor: "black",
-                          mx: "5px"
-                        }}
-                      />
-
-                      <Stack
-                        direction="row"
-                        sx={{
-                          "& .MuiSvgIcon-root": {
-                            fontSize: "14px"
-                          }
-                        }}
-                      >
-                        {Array.from({ length: 5 }).map((_, index) => {
-                          return (
-                            <StarIcon
-                              key={index}
-                              sx={{
-                                color:
-                                  index < item.rating
-                                    ? "rgb(250, 175, 0)"
-                                    : "#000"
-                              }}
-                            />
-                          )
-                        })}
-                      </Stack>
-                    </Stack>
-
-                    {/* Dòng 2: Thông tin đã mua */}
-                    {item.hasPurchased && (
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Box
-                          sx={{
-                            border: "2px solid",
-                            borderColor: "success.main",
-                            borderRadius: "50%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: 20,
-                            height: 20
-                          }}
-                        >
-                          <DoneIcon
-                            sx={{ fontSize: "15px", color: "primary.main" }}
-                          />
-                        </Box>
-                        <Typography
-                          component="span"
-                          fontSize={15}
-                          color="primary.main"
-                          sx={{
-                            fontWeight: "bold"
-                          }}
-                        >
-                          Đã mua tại cửa hàng Minh Anh
-                        </Typography>
-                      </Stack>
-                    )}
-
-                    {/* Dòng 3: Nội dung đánh giá */}
-                    <Stack
-                      direction={"row"}
-                      alignContent={"center"}
-                      spacing={3}
-                    >
-                      <Typography
-                        sx={{
-                          fontWeight: 400,
-                          mt: 2.5,
-                          textTransform: "capitalize"
-                        }}
-                      >
-                        {item.content}
-                      </Typography>
-                      {item.pending && (
-                        <Typography sx={{ mt: 2.5, opacity: "0.5" }}>
-                          đang viết...
-                        </Typography>
-                      )}
                     </Stack>
                   </Stack>
-                </Stack>
-              </Box>
-            )
-          })}
+                </Box>
+              )
+            })
+          )}
           {pagination.page < pagination.totalPages && (
             <Stack
               direction={"row"}

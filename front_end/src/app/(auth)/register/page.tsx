@@ -1,7 +1,12 @@
 import RegisterForm from "@/app/_component/RegisterForm"
 import Box from "@mui/material/Box"
+import { Metadata } from "next"
 import React from "react"
 
+export const metadata: Metadata = {
+  title: "Đăng ký và trải nghiệm",
+  description: "Thực phẩm sạch luôn là sự lựa chọn hàng đầu"
+}
 const PageRegister = () => {
   return (
     <Box

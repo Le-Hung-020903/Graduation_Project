@@ -8,6 +8,8 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { UserModule } from 'src/user/user.module';
 import { BlackListModule } from 'src/black-list/black-list.module';
 import { DiscountModule } from 'src/discount/discount.module';
+import { OrderNotificationModule } from 'src/order-notification/order-notification.module';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   controllers: [OrderController],
@@ -18,6 +20,8 @@ import { DiscountModule } from 'src/discount/discount.module';
     BlackListModule,
     UserModule,
     DiscountModule,
+    OrderNotificationModule,
+    NotificationsModule,
   ],
 })
 export class OrderModule {}

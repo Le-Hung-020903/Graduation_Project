@@ -6,8 +6,8 @@ import QrCode from "@/app/_component/QrCode"
 import Footer from "@/app/_component/Footer"
 
 export const metadata: Metadata = {
-  title: "Pay with QR Code",
-  description: "Fast and convenient payment with QR code"
+  title: "Thanh toán bằng mã QR",
+  description: "Thanh toán nhanh chóng và tiện lợi với mã QR"
 }
 
 const PageQrCode = () => {

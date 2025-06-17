@@ -118,6 +118,19 @@ export class CommentService {
     // Lấy userIds duy nhất từ comment
     const userIdSet = new Set(comments.map((item) => item.user.id));
     const userIds = Array.from(userIdSet);
+    if (userIds.length === 0) {
+      return {
+        success: false,
+        message: 'Hãy thêm ý kiến của mọi người về sản phẩm này nha',
+        data: [],
+        pagination: {
+          total: 0,
+          page: page,
+          limit: limit,
+          totalPages: 0,
+        },
+      };
+    }
 
     // Truy vấn kiểm tra ai đã mua sản phẩm này (DELIVERED)
     const deliveredOrders = await this.orderRepository

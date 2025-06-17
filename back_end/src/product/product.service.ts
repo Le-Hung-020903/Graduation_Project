@@ -42,6 +42,8 @@ export class ProductService {
       desc_markdown,
       desc_html,
       manufacturer_id,
+      manufacture_date,
+      expiry_date,
       ingredients,
       variants,
     }: CreateProductDto = createProductDto;
@@ -56,6 +58,8 @@ export class ProductService {
       slug: createSlug,
       desc_markdown,
       desc_html,
+      manufacture_date,
+      expiry_date,
     });
     const saveProduct = await this.productRepository.save(product);
 
@@ -322,6 +326,8 @@ export class ProductService {
       desc_markdown: updateProductDto.desc_markdown,
       desc_html: updateProductDto.desc_html,
       slug: createSlug,
+      expiry_date: updateProductDto.expiry_date,
+      manufacture_date: updateProductDto.manufacture_date,
     });
 
     if (files.length > 0) {
@@ -387,6 +393,67 @@ export class ProductService {
     return {
       success: true,
       message: 'Cập nhật sản phẩm thành công',
+    };
+  }
+
+  async getRelatedProduct(
+    categoryId: number,
+    userId?: number,
+  ): Promise<{
+    success: boolean;
+    message: string;
+    data: Product[];
+  }> {
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.variants', 'variants')
+      .leftJoinAndSelect('variants.unit', 'unit')
+      .where('product.category_id = :categoryId', { categoryId })
+      // .andWhere('product.is_deleted = false') // nếu có xóa mềm
+      // .orderBy('RANDOM()') // ngẫu nhiên
+      .take(2)
+      .select([
+        'product.id',
+        'product.name',
+        'product.slug',
+        'category.name',
+        'images.url',
+        'variants.price',
+        'unit.symbol',
+      ]);
+
+    const products = await queryBuilder.getMany();
+
+    if (products.length === 0) {
+      return {
+        success: false,
+        message: 'Không có sản phẩm tương tự',
+        data: [],
+      };
+    }
+    // Lấy sản phẩm yêu thích khi có id người dùng
+    const favoriteProduct = userId
+      ? await this.favoriteProductRepository
+          .createQueryBuilder('fp')
+          .leftJoin('fp.product', 'product')
+          .where('fp.user_id = :userId', { userId })
+          .select('product.id', 'product')
+          .getRawMany()
+      : [];
+    const favoriteProductIds = new Set(
+      favoriteProduct.map((item) => item.product),
+    );
+
+    const results = products.map((item) => ({
+      ...item,
+      isFavorite: favoriteProductIds.has(item.id),
+    }));
+    return {
+      success: true,
+      message: 'Lấy danh sách sản phẩm tương tự thành công',
+      data: results,
     };
   }
 

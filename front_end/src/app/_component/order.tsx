@@ -110,7 +110,7 @@ const Order = () => {
                   order_code: res.data.order_code,
                   payment_status: "UNPAID",
                   payment_method: "COD",
-                  admin_redirect_url: "/order",
+                  admin_redirect_url: `/order/${res.data.id}`,
                   user_redirect_url: `/member/history/${res.data.id}`,
                   user_id: user?.id
                 }
@@ -139,7 +139,7 @@ const Order = () => {
               order_code: res.data.order_code,
               payment_status: "UNPAID",
               payment_method: "COD",
-              admin_redirect_url: "/order",
+              admin_redirect_url: `/order/${res.data.id}`,
               user_redirect_url: `/member/history/${res.data.id}`,
               user_id: user?.id
             }

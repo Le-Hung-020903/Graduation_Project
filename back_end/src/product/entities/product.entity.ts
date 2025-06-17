@@ -32,6 +32,12 @@ export class Product {
   @Column({ type: 'text' })
   desc_markdown: string;
 
+  @Column({ type: 'timestamp', nullable: true })
+  manufacture_date: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  expiry_date: Date;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 

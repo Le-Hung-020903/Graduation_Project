@@ -27,6 +27,7 @@ import { getProductDetail } from "@/app/api/apiwithserver"
 import Variants from "@/app/_component/Variants"
 import "../../../../public/style/table.css"
 import PageBreadcrumbs from "@/app/_component/Breadcrumbs"
+import dayjs from "dayjs"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -170,6 +171,51 @@ async function PageDetail({ params }: PageProps) {
                   </Stack>
                 </Box>
                 <Divider sx={{ my: "24px" }} />
+                <Stack
+                  direction={"row"}
+                  spacing={1}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      color: "#757577",
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      lineHeight: "16px"
+                    }
+                  }}
+                >
+                  <Typography>Ngày sản xuất:</Typography>
+                  <Typography
+                    sx={{
+                      color: "#1D1D1F !important",
+                      fontWeight: "500 !important"
+                    }}
+                  >
+                    {dayjs(product.manufacture_date).format("DD / MM / YYYY")}
+                  </Typography>
+                </Stack>
+                <Stack
+                  my={2.5}
+                  direction={"row"}
+                  spacing={1}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      color: "#757577",
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      lineHeight: "16px"
+                    }
+                  }}
+                >
+                  <Typography>Hạn sử dụng:</Typography>
+                  <Typography
+                    sx={{
+                      color: "#1D1D1F !important",
+                      fontWeight: "500 !important"
+                    }}
+                  >
+                    {dayjs(product.expiry_date).format("DD / MM / YYYY")}
+                  </Typography>
+                </Stack>
                 <Stack spacing={1.5}>
                   <Stack
                     direction={"row"}
@@ -248,57 +294,13 @@ async function PageDetail({ params }: PageProps) {
                       </Box>
                     </Box>
                   </Stack>
-                  <Stack
-                    direction={"row"}
-                    spacing={1}
-                    sx={{
-                      "& .MuiTypography-root": {
-                        color: "#757577",
-                        fontSize: "12px",
-                        fontWeight: "400",
-                        lineHeight: "16px"
-                      }
-                    }}
-                  >
-                    <Typography>NSX:</Typography>
-                    <Typography
-                      sx={{
-                        color: "#1D1D1F !important",
-                        fontWeight: "500 !important"
-                      }}
-                    >
-                      20/12/2024
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    direction={"row"}
-                    spacing={1}
-                    sx={{
-                      "& .MuiTypography-root": {
-                        color: "#757577",
-                        fontSize: "12px",
-                        fontWeight: "400",
-                        lineHeight: "16px"
-                      }
-                    }}
-                  >
-                    <Typography>HSD:</Typography>
-                    <Typography
-                      sx={{
-                        color: "#1D1D1F !important",
-                        fontWeight: "500 !important"
-                      }}
-                    >
-                      20/12/2024
-                    </Typography>
-                  </Stack>
                 </Stack>
               </Grid>
             </Grid>
           </Box>
           <Box
             sx={{
-              mt: "90px",
+              mt: 7,
               border: "1px solid #E2E3E4",
               borderRadius: "20px",
               overflow: "hidden"

@@ -14,7 +14,7 @@ export interface ICartProduct {
   price: number
   product: IProduct
   variant: IVariant
-  variantSelected: IVariant | null
+  variantSelected: IVariant
   images: IImages
 }
 export interface ICart {
@@ -24,4 +24,9 @@ export interface ICart {
 interface IImages {
   id: number
   url: string
+}
+export interface ICartUpdate {
+  id: number
+  quantity: number
+  price: number
 }

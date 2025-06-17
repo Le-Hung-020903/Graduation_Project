@@ -52,6 +52,13 @@ export class ProductController {
   }
 
   @Public()
+  @Get('related/:id')
+  getRelatedProduct(@Req() req, @Param('id') id: string) {
+    const userId = req?.user?.userId;
+    return this.productService.getRelatedProduct(+id, Number(userId));
+  }
+
+  @Public()
   @Get('/search')
   searchProduct(@Query('q') query: string) {
     return this.productService.searchProduct(query);

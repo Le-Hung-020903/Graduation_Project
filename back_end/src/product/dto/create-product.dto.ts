@@ -26,6 +26,14 @@ export class CreateProductDto {
   @IsInt({ message: 'Mã nhà sản xuất phải là số nguyên' })
   manufacturer_id: number;
 
+  @IsNotEmpty()
+  @IsString()
+  manufacture_date: string;
+
+  @IsNotEmpty()
+  @IsString()
+  expiry_date: string;
+
   @IsString()
   desc_html: string;
 

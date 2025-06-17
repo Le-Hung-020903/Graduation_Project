@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import {
+  deleteCartAPI,
   // createCatAPI,
   getCartAPI,
   updateCartAPI
 } from "../middlewares/cartMiddlewares"
-import { ICart, ICartProduct } from "@/app/_interfaces/cart"
+import { ICart, ICartProduct, ICartUpdate } from "@/app/_interfaces/cart"
 import { RootState } from "../store"
 
 interface ICartSlice {
@@ -34,19 +35,20 @@ const cartSlice = createSlice({
     )
     builder.addCase(
       updateCartAPI.fulfilled,
-      (state, action: PayloadAction<ICartProduct>) => {
-        const updatedProduct = action.payload // Sản phẩm vừa cập nhật
-        const index = state.items.findIndex(
-          (item) => item.id === updatedProduct.id
-        )
-
-        if (index !== -1) {
-          // 🔥 Nếu sản phẩm đã có trong giỏ, cập nhật số lượng & giá
-          state.items[index] = updatedProduct
-        } else {
-          // ➕ Nếu sản phẩm chưa có, thêm mới vào giỏ
-          state.items.push(updatedProduct)
+      (state, action: PayloadAction<ICartUpdate>) => {
+        const { id, quantity, price } = action.payload // Sản phẩm vừa cập nhật
+        const item = state.items.find((item) => item.id === id)
+        if (item) {
+          item.quantity = quantity
+          item.price = price
         }
+      }
+    )
+    builder.addCase(
+      deleteCartAPI.fulfilled,
+      (state, action: PayloadAction<number>) => {
+        const id = action.payload
+        state.items = state.items.filter((item) => item.id !== id)
       }
     )
   }
@@ -56,5 +58,8 @@ export const selectCartUser = (state: RootState) => {
     cartId: state.cart.cartId,
     items: state.cart.items
   }
+}
+export const selectLengthCarts = (state: RootState) => {
+  return state.cart.items.length
 }
 export default cartSlice.reducer

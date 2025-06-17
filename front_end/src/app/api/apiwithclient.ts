@@ -76,6 +76,11 @@ export const createCartAPI = async (cart_product: {
   return res.data
 }
 
+export const deleteCartProductAPI = async (id: number) => {
+  const res = await authorizedAxiosInstance.delete(`cart_product/${id}`)
+  return res.data
+}
+
 // PRODUCTS
 export const getProductsAPI = async (page: number, limit: number) => {
   const res = await authorizedAxiosInstance.get(

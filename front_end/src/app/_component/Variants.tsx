@@ -22,15 +22,16 @@ interface IVariantsProp {
 const Variants = ({ data }: IVariantsProp) => {
   const user = useSelector(selectCurrentUser)
   const [variant, setVariant] = useState<IVariant | null>(null)
+  console.log("🚀 ~ Variants ~ variant:", variant)
   const [quantity, setQuantity] = useState<number>(1)
-  const [total, setTotal] = useState<number>(0)
+  console.log("🚀 ~ Variants ~ quantity:", quantity)
 
   const handleAddQuantity = () => {
     setQuantity(quantity + 1)
   }
 
   const handleRemoveQuantity = () => {
-    if (quantity > 0) {
+    if (quantity > 1) {
       setQuantity(quantity - 1)
     }
   }
@@ -39,10 +40,6 @@ const Variants = ({ data }: IVariantsProp) => {
   const handleSelectVariant = (variant: IVariant) => {
     setVariant(variant)
   }
-
-  useEffect(() => {
-    if (variant) setTotal(quantity * variant.price)
-  }, [quantity, variant])
 
   // ✅ Chỉ set biến thể mặc định khi `data` có giá trị
   useEffect(() => {
@@ -56,20 +53,22 @@ const Variants = ({ data }: IVariantsProp) => {
       toast.warning("Yêu cầu bạn đăng nhập để thêm sản phẩm vào giỏ hàng !!!")
       return
     }
-    // const cart_product: {
-    //   quantity: number
-    //   product_id: number
-    //   variant_id: number
-    //   price: number
-    // } = {
-    //   quantity,
-    //   product_id: data.id,
-    //   variant_id: variant?.id ? variant?.id : 0,
-    //   price: total
-    // }
-    // toast.promise(createCartAPI(cart_product), {}).then((res) => {
-    //   if (res.success) toast.success("Thêm giỏ hàng thành công")
-    // })
+    const cart_product: {
+      quantity: number
+      product_id: number
+      variant_id: number
+      price: number
+    } = {
+      quantity,
+      product_id: data.id,
+      variant_id: variant?.id ? variant?.id : 0,
+      price: variant?.price ? variant?.price : 0
+    }
+    console.log("🚀 ~ handleSubmit ~ cart_product:", cart_product)
+
+    toast.promise(createCartAPI(cart_product), {}).then((res) => {
+      if (res.success) toast.success("Thêm giỏ hàng thành công")
+    })
   }
   // ✅ Nếu chưa có dữ liệu, không render tiếp
   if (!variant) return null

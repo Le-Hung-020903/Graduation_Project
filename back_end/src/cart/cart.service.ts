@@ -21,25 +21,23 @@ export class CartService {
   ): Promise<{
     success: boolean;
     message: string;
-    data: Cart;
   }> {
     const { cart_product }: CreateCartDto = createCartDto;
-    // 🔥 Kiểm tra giỏ hàng có tồn tại không
+    // Kiểm tra giỏ hàng có tồn tại không
     let cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
-      relations: ['cartProducts'],
     });
+    console.log('🚀 ~ CartService ~ cart:', cart);
 
     if (!cart) {
       // 🛒 Nếu chưa có giỏ hàng thì tạo mới
       cart = this.cartRepository.create({
         user: { id: userId },
-        cartProducts: [],
       });
       cart = await this.cartRepository.save(cart);
     }
 
-    // ➕ Thêm sản phẩm mới vào giỏ hàng
+    // Thêm sản phẩm mới vào giỏ hàng
     const newCartProduct = await this.cartProductService.create({
       product_id: cart_product.product_id,
       variant_id: cart_product.variant_id,
@@ -48,12 +46,10 @@ export class CartService {
       cart_id: cart.id,
     });
 
-    cart.cartProducts.push(newCartProduct);
     await this.cartRepository.save(cart);
     return {
       success: true,
       message: 'Tạo giỏ hàng thành công',
-      data: cart,
     };
   }
 
@@ -112,10 +108,9 @@ export class CartService {
     };
   }
 
-  async update(updateCartDto: UpdateCartDto, userId: number) {
+  async update(cartId: number, updateCartDto: UpdateCartDto, userId: number) {
     const cart = await this.cartRepository.findOne({
-      where: { user: { id: userId } },
-      relations: ['cartProducts'],
+      where: { id: cartId, user: { id: userId } },
     });
 
     if (!cart) {
@@ -128,14 +123,13 @@ export class CartService {
         product: { id: updateCartDto.cart_product?.product_id },
         variant: { id: updateCartDto.cart_product?.variant_id },
       },
-      relations: ['cart', 'product', 'variant'],
     });
+
     if (!cartProduct) {
       throw new NotFoundException('Không tìm thấy sản phẩm trong giỏ hàng');
     }
     cartProduct.quantity =
       updateCartDto.cart_product?.quantity ?? cartProduct.quantity;
-    cartProduct.price = updateCartDto.cart_product?.price ?? cartProduct.price;
 
     await this.cartProductRepository.save(cartProduct);
 
@@ -145,7 +139,39 @@ export class CartService {
       data: cartProduct,
     };
   }
+  // async update(cartId: number, updateCartDto: UpdateCartDto, userId: number) {
+  //   const cart = await this.cartRepository.findOne({
+  //     where: { user: { id: userId }, id: cartId },
+  //     relations: ['cartProducts'],
+  //   });
 
+  //   if (!cart) {
+  //     throw new NotFoundException('Giỏ hàng không tồn tại');
+  //   }
+
+  //   const cartProduct = await this.cartProductRepository.findOne({
+  //     where: {
+  //       cart: { id: cart.id },
+  //       product: { id: updateCartDto.cart_product?.product_id },
+  //       variant: { id: updateCartDto.cart_product?.variant_id },
+  //     },
+  //     relations: ['cart', 'product', 'variant'],
+  //   });
+  //   if (!cartProduct) {
+  //     throw new NotFoundException('Không tìm thấy sản phẩm trong giỏ hàng');
+  //   }
+  //   cartProduct.quantity =
+  //     updateCartDto.cart_product?.quantity ?? cartProduct.quantity;
+  //   cartProduct.price = updateCartDto.cart_product?.price ?? cartProduct.price;
+
+  //   await this.cartProductRepository.save(cartProduct);
+
+  //   return {
+  //     success: true,
+  //     message: 'Cập nhật giỏ hàng thành công',
+  //     data: cartProduct,
+  //   };
+  // }
   remove(id: number) {
     return `This action removes a #${id} cart`;
   }

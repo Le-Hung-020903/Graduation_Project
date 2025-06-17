@@ -8,8 +8,8 @@ import Order from "../_component/order"
 import Footer from "../_component/Footer"
 
 export const metadata: Metadata = {
-  title: "Pay with your order",
-  description: "Let's start payment"
+  title: "Tiến hành thanh toán",
+  description: "Hoàn tất đơn hàng của bạn ngay bây giờ"
 }
 
 const PageOrder = () => {

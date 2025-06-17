@@ -8,8 +8,8 @@ import NavigationBar from "../_component/NavigationBar"
 import Container from "@mui/material/Container"
 
 export const metadata: Metadata = {
-  title: "Profile Website Clean Food",
-  description: "Clean food is always the first choice"
+  title: "Trang cá nhân - Thực phẩm sạch",
+  description: "Thực phẩm sạch luôn là sự lựa chọn hàng đầu"
 }
 export default function ProfileLayout({
   children

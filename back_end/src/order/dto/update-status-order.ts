@@ -18,7 +18,5 @@ export class UpdateStatusOrder {
   status?: string;
 
   @IsOptional()
-  @IsInt({ message: 'Mã địa chỉ phải là số dương' })
-  @Min(1, { message: 'Mã địa chỉ phải lớn hơn 0' })
   address_id?: number;
 }
